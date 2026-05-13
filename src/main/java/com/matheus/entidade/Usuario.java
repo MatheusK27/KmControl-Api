@@ -1,6 +1,7 @@
 package com.matheus.entidade;
 
 
+import com.matheus.entidade.dto.DadosCadastroMotoboy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,4 +36,8 @@ public class Usuario {
 
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm =  LocalDateTime.now();
+
+    public Usuario(DadosCadastroMotoboy dados) {
+
+    }
 }

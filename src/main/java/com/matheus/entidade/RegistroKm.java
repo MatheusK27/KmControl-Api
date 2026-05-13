@@ -21,7 +21,7 @@ public class RegistroKm {
     private Long id;
 
     @ManyToOne
-        @JoinColumn(name = "motoboy_id", nullable = false)
+    @JoinColumn(name = "motoboy_id", nullable = false)
     private Motoboy motoboy;
 
     @ManyToOne
@@ -41,9 +41,6 @@ public class RegistroKm {
     private String observacao;
 
     private LocalDate criadoEm= LocalDate.now();
-
-
-
 
 
 

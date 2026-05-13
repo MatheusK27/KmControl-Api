@@ -1,6 +1,7 @@
 package com.matheus.entidade;
 
 
+import com.matheus.entidade.dto.DadosCadastroMotoboy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,4 +25,11 @@ public class Motoboy {
     private String telefone;
     private Boolean ativo= true;
     private LocalDateTime criadoEm= LocalDateTime.now();
+
+    public Motoboy(DadosCadastroMotoboy dados) {
+        this.nome= dados.nome();
+        this.cnh= dados.cnh();
+        this.telefone= dados.telefone();
+
+    }
 }

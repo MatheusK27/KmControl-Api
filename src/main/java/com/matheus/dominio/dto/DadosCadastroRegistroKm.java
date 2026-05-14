@@ -1,4 +1,4 @@
-package com.matheus.entidade.dto;
+package com.matheus.dominio.dto;
 
 
 
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public record DadosCadastroRegistroKm( @NotNull Long motoboyId,
                                       @NotNull LocalDate data,
-                                      Integer kmEntrada,
+                                      Integer kmInicio,
                                       Integer kmSaidaAlmoco,
                                       Integer kmRetornoAlmoco,
                                       Integer kmFim,

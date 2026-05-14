@@ -1,12 +1,14 @@
-package com.matheus.entidade;
+package com.matheus.dominio.entidades;
 
 
+import com.matheus.dominio.dto.DadosCadastroRegistroKm;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -34,14 +36,24 @@ public class RegistroKm {
 
     private Integer kmSaidaAlmoco;
 
-    private Integer kmEntredaAlmoco;
+    private Integer kmRetornoAlmoco;
 
     private Integer kmFim;
 
     private String observacao;
 
-    private LocalDate criadoEm= LocalDate.now();
+    private LocalDateTime criadoEm= LocalDateTime.now();
 
+    private RegistroKm (DadosCadastroRegistroKm dados,Motoboy motoboy,Usuario usuario){
+        this.motoboy=motoboy;
+        this.usuario=usuario;
+        this.data= dados.data();
+        this.kmInicio=dados.kmInicio();
+        this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
+        this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
+        this.kmFim=dados.kmFim();
+        this.observacao=dados.observacao();
+    }
 
 
 

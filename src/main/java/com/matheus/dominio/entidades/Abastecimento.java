@@ -1,4 +1,4 @@
-package com.matheus.entidade;
+package com.matheus.dominio.entidades;
 
 
 import jakarta.persistence.*;
@@ -41,4 +41,8 @@ public class Abastecimento {
     private String posto;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
+
+
 }
+
+

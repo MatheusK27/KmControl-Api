@@ -1,7 +1,7 @@
-package com.matheus.entidade;
+package com.matheus.dominio.entidades;
 
 
-import com.matheus.entidade.dto.DadosCadastroMotoboy;
+import com.matheus.dominio.dto.DadosCadastroUsuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,13 +31,16 @@ public class Usuario {
     private String senha;
 
 
-    private String perfil = "OPERADOR";
+    private String perfil = "user";
     private boolean ativo = true;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm =  LocalDateTime.now();
 
-    public Usuario(DadosCadastroMotoboy dados) {
+    public Usuario(DadosCadastroUsuario dados) {
+        this.nome= dados.nome();
+        this.login = dados.login();
+        this.senha = dados.senha();
 
     }
 }

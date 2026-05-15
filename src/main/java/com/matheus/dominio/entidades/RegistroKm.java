@@ -32,7 +32,7 @@ public class RegistroKm {
 
     private LocalDate data= LocalDate.now();
 
-    private Integer kmInicio;
+    private Integer kmEntrada;
 
     private Integer kmSaidaAlmoco;
 
@@ -48,7 +48,7 @@ public class RegistroKm {
         this.motoboy=motoboy;
         this.usuario=usuario;
         this.data= dados.data();
-        this.kmInicio=dados.kmInicio();
+        this.kmEntrada=dados.kmInicio();
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
         this.kmFim=dados.kmFim();

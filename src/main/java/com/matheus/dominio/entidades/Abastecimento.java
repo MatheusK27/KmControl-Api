@@ -32,9 +32,12 @@ public class Abastecimento {
 
     private LocalDate data = LocalDate.now();
 
-    private Integer kmMomento;
+    private Integer  kmMomento;
+
 
     private BigDecimal litros;
+
+    private BigDecimal valorLitro;
 
     private BigDecimal valorTotal;
 

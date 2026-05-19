@@ -19,9 +19,9 @@ public class Motoboy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private String cnh;
+    private String placa;
     private String telefone;
     private Boolean ativo= true;
     private LocalDateTime criadoEm= LocalDateTime.now();
@@ -30,6 +30,7 @@ public class Motoboy {
         this.nome= dados.nome();
         this.cnh= dados.cnh();
         this.telefone= dados.telefone();
+        this.placa= dados.placa();
 
     }
 }

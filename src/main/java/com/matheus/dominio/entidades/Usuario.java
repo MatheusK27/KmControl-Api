@@ -2,7 +2,6 @@ package com.matheus.dominio.entidades;
 
 
 import com.matheus.dominio.dto.DadosCadastroUsuario;
-import com.matheus.dominio.enums.TipoUsuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

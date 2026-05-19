@@ -14,8 +14,6 @@ public class UsuarioServico {
     @Autowired
     private UsuarioRepositorio repositorio;
 
-    @Autowired
-    private Usuario usuario;
 
     public DadosDetalhamentoUsuario cadastrarUsuario(DadosCadastroUsuario dados){
         var usuario= new Usuario(dados);
@@ -23,13 +21,9 @@ public class UsuarioServico {
         return new DadosDetalhamentoUsuario(usuario);
     }
 
-    public void excluirUsuario(Long id){
-        if (usuario.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            repositorio.deleteById(id);
-        }  else {
-            throw new RuntimeException("Usuário não possui permissão para excluir");
-        }
 
+    public void excluirUsuario(Long id) {
+        var usuario=  repositorio.findById(id).orElse(null);
+        repositorio.delete(usuario);
     }
-
 }

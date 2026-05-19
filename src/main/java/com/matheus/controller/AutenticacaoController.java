@@ -2,6 +2,7 @@ package com.matheus.controller;
 
 
 import com.matheus.dominio.dto.DadosCadastroUsuario;
+import com.matheus.dominio.dto.DadosLogin;
 import com.matheus.dominio.entidades.Usuario;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import com.matheus.seguranca.TokenService;
@@ -27,7 +28,7 @@ public class AutenticacaoController {
     private AuthenticationManager manager;
 
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody @Valid DadosCadastroUsuario dados) {
+    public ResponseEntity<String> login(@RequestBody @Valid DadosLogin dados) {
         var token= new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
         var authenticate = manager.authenticate(token);
         var jwt= tokenService.gerarToken((Usuario) authenticate.getPrincipal());

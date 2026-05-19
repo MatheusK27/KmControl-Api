@@ -17,6 +17,7 @@ public class MotoboyServico {
     private MotoboyRepositorio repositorio;
 
     public  DadosDetalhamentoMotoboy cadastrarMotoboy(DadosCadastroMotoboy dados) {
+        
         var motoboy = new Motoboy(dados);
         repositorio.save(motoboy);
         return new DadosDetalhamentoMotoboy(motoboy);

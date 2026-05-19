@@ -7,12 +7,11 @@ import com.matheus.dominio.dto.DadosDetalhamentoUsuario;
 import com.matheus.dominio.entidades.Usuario;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import com.matheus.dominio.service.UsuarioServico;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
@@ -24,12 +23,15 @@ public class UsuarioController {
     @Autowired
     private UsuarioServico servico;
 
+    @PostMapping
+    @Transactional
     public ResponseEntity<DadosDetalhamentoUsuario> cadastroUsuario(@RequestBody @Valid DadosCadastroUsuario dados) {
         var usuario= servico.cadastrarUsuario(dados);
         return  ResponseEntity.ok().body(usuario);
     }
-    public ResponseEntity excluirUsuario(Long id){
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity excluirUsuario(@PathVariable Long id){
         servico.excluirUsuario(id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

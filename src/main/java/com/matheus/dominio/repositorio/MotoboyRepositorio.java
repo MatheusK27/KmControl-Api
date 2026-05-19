@@ -1,4 +1,4 @@
-package com.matheus.repositorio;
+package com.matheus.dominio.repositorio;
 
 import com.matheus.dominio.entidades.Motoboy;
 import org.springframework.data.jpa.repository.JpaRepository;

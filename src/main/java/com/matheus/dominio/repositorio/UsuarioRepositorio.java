@@ -1,9 +1,10 @@
-package com.matheus.repositorio;
+package com.matheus.dominio.repositorio;
 
 import com.matheus.dominio.entidades.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UsuarioRepositorio extends JpaRepository<Usuario,Long> {
-    Usuario findByLogin(String login);
+    UserDetails findByLogin(String login);
 
 }

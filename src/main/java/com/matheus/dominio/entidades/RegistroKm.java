@@ -1,6 +1,7 @@
 package com.matheus.dominio.entidades;
 
 
+import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
 import com.matheus.dominio.dto.DadosCadastroRegistroKm;
 import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
 import jakarta.persistence.*;
@@ -52,6 +53,33 @@ public class RegistroKm {
 
     }
 
+    public RegistroKm(DadosAtualizarRegistroKm dados, Motoboy motoboy) {
+        this.motoboy=motoboy;
+        this.data= dados.data();
+        this.kmEntrada=dados.kmInicio();
+        this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
+        this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
+        this.kmFim=dados.kmFim();
+
+    }
 
 
+    public void atualizarKm(DadosAtualizarRegistroKm dados) {
+
+        if(dados.kmInicio()!=null){
+            this.kmEntrada=dados.kmInicio();
+
+        }
+        if(dados.kmSaidaAlmoco()!=null){
+            this.kmSaidaAlmoco=dados.kmSaidaAlmoco();
+        }
+        if(dados.kmRetornoAlmoco()!=null){
+            this.kmRetornoAlmoco=dados.kmRetornoAlmoco();
+
+        }
+        if(dados.kmFim()!=null){
+            this.kmFim=dados.kmFim();
+        }
+
+    }
 }

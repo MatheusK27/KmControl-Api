@@ -1,5 +1,6 @@
 package com.matheus.dominio.service;
 
+import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
 import com.matheus.dominio.dto.DadosCadastroRegistroKm;
 import com.matheus.dominio.dto.DadosDetalhamentoAbastecimento;
 import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
@@ -24,6 +25,13 @@ public class RegistroKmService {
         }
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
         var km= new RegistroKm(dados, motoboy);
+        repositorio.save(km);
+        return new DadosDetalhamentoRegistroKm(km);
+    }
+
+    public DadosDetalhamentoRegistroKm atualizarKm (DadosAtualizarRegistroKm dados){
+        var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
+        var km= new RegistroKm(dados,motoboy);
         repositorio.save(km);
         return new DadosDetalhamentoRegistroKm(km);
     }

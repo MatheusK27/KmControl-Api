@@ -1,5 +1,6 @@
 package com.matheus.controller;
 
+import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
 import com.matheus.dominio.dto.DadosCadastroRegistroKm;
 import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.entidades.Motoboy;
@@ -8,10 +9,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/registro")
@@ -22,9 +20,17 @@ public class RegistroKmController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DadosDetalhamentoRegistroKm> cadastrarKmDiario(@RequestBody @Valid DadosCadastroRegistroKm dados
-                                                                         ){
+    public ResponseEntity<DadosDetalhamentoRegistroKm> cadastrarKmDiario(@RequestBody @Valid DadosCadastroRegistroKm dados){
+
         var cadastro= servico.cadastrarKmDiario(dados);
         return ResponseEntity.ok().body(cadastro);
     }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoRegistroKm> atualizarKm(@RequestBody @Valid DadosAtualizarRegistroKm dados){
+        var atualizar= servico.atualizarKm(dados);
+        return ResponseEntity.ok().body(atualizar);
+    }
+
 }

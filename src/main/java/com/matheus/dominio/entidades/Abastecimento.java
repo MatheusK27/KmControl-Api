@@ -1,7 +1,9 @@
 package com.matheus.dominio.entidades;
 
 
+import com.matheus.dominio.dto.DadosCadastroAbastecimento;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +46,19 @@ public class Abastecimento {
     private String posto;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
+
+
+    public Abastecimento(@Valid DadosCadastroAbastecimento dados, Motoboy motoboy) {
+        this.motoboy=motoboy;
+        this.data= dados.data();
+        this.kmMomento=dados.kmMomento();
+        this .litros = dados.litros();
+        this.valorLitro=dados.valorLitro();
+        this.valorTotal=dados.valorTotal();
+        this.posto=dados.posto();
+
+
+    }
 
 
 }

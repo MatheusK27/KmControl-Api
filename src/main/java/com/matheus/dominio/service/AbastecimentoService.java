@@ -21,9 +21,7 @@ public class AbastecimentoService {
 
     public DadosDetalhamentoAbastecimento fornecerAbastecimento(DadosCadastroAbastecimento dados) {
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
-        var abastecimento= new Abastecimento();
-        abastecimento.setMotoboy(motoboy);
-        abastecimento.setValorLitro(dados.valorLitro());
+        var abastecimento= new Abastecimento(dados, motoboy);
         return new DadosDetalhamentoAbastecimento(abastecimento);
     }
 }

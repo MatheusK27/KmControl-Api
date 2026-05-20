@@ -30,8 +30,8 @@ public class RegistroKmService {
     }
 
     public DadosDetalhamentoRegistroKm atualizarKm (DadosAtualizarRegistroKm dados){
-        var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
-        var km= new RegistroKm(dados,motoboy);
+        var km= repositorio.findById(dados.id()).orElseThrow(() -> new RuntimeException("Registro KM não encontrado"));
+        km.atualizarKm(dados);
         repositorio.save(km);
         return new DadosDetalhamentoRegistroKm(km);
     }

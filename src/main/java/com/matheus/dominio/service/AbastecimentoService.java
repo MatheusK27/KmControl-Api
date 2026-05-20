@@ -9,6 +9,8 @@ import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class AbastecimentoService {
 
@@ -22,6 +24,14 @@ public class AbastecimentoService {
     public DadosDetalhamentoAbastecimento fornecerAbastecimento(DadosCadastroAbastecimento dados) {
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
         var abastecimento= new Abastecimento(dados, motoboy);
+        var total = calculoCombustivel(abastecimento);
+        abastecimento.setValorTotal(BigDecimal.valueOf(total));
+        repositorio.save(abastecimento);
         return new DadosDetalhamentoAbastecimento(abastecimento);
+    }
+
+    private double calculoCombustivel(Abastecimento abastecimento) {
+        BigDecimal valorTotalCombustivel = abastecimento.getValorLitro().multiply(abastecimento.getLitros());
+        return valorTotalCombustivel.doubleValue();
     }
 }

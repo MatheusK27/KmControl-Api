@@ -13,7 +13,6 @@ public record DadosCadastroAbastecimento(
         @NotNull Integer kmMomento,
         @NotNull BigDecimal litros,
         @NotNull BigDecimal valorLitro,
-        @NotNull BigDecimal valorTotal,
         @NotBlank String posto
 
         ) {

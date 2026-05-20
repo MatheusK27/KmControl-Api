@@ -5,6 +5,7 @@ import com.matheus.dominio.dto.DadosDetalhamentoAbastecimento;
 import com.matheus.dominio.entidades.Abastecimento;
 import com.matheus.dominio.repositorio.AbastecimentoRepositorio;
 import com.matheus.dominio.service.AbastecimentoService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +26,10 @@ public class AbastecimentoController {
     private AbastecimentoRepositorio repositorio;
 
     @PostMapping
-
+    @Transactional
     public ResponseEntity<DadosDetalhamentoAbastecimento> fornecerAbastecimento(@RequestBody @Valid DadosCadastroAbastecimento dados){
         var abastecimento = service.fornecerAbastecimento(dados);
         return ResponseEntity.ok().body(abastecimento);
-
 
     }
 }

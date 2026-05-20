@@ -48,13 +48,12 @@ public class Abastecimento {
     private LocalDateTime criadoEm = LocalDateTime.now();
 
 
-    public Abastecimento(@Valid DadosCadastroAbastecimento dados, Motoboy motoboy) {
+    public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy) {
         this.motoboy=motoboy;
         this.data= dados.data();
         this.kmMomento=dados.kmMomento();
         this .litros = dados.litros();
         this.valorLitro=dados.valorLitro();
-        this.valorTotal=dados.valorTotal();
         this.posto=dados.posto();
 
 

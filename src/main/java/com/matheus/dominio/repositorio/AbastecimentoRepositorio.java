@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface AbastecimentoRepositorio extends JpaRepository<RegistroKm, Long> {
+public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     List<Abastecimento> findByMotoboyId(Long motoboyId);
     List<Abastecimento> findByDataBetween(LocalDate inicio, LocalDate fim);
 }

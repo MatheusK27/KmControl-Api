@@ -11,6 +11,5 @@ public record DadosCadastroRegistroKm( @NotNull Long motoboyId,
                                       Integer kmInicio,
                                       Integer kmSaidaAlmoco,
                                       Integer kmRetornoAlmoco,
-                                      Integer kmFim,
-                                      String observacao) {
+                                      Integer kmFim) {
 }

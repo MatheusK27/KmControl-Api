@@ -6,7 +6,9 @@ import com.matheus.dominio.dto.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.entidades.Motoboy;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -17,7 +19,9 @@ public class MotoboyServico {
     private MotoboyRepositorio repositorio;
 
     public  DadosDetalhamentoMotoboy cadastrarMotoboy(DadosCadastroMotoboy dados) {
-        
+    if(repositorio.existsByPlaca(dados.placa())){
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"JÁ EXISTE UM MOTOBOY COM ESSA PLACA");
+    }
         var motoboy = new Motoboy(dados);
         repositorio.save(motoboy);
         return new DadosDetalhamentoMotoboy(motoboy);

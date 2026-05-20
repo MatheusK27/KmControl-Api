@@ -2,6 +2,7 @@ package com.matheus.dominio.entidades;
 
 
 import com.matheus.dominio.dto.DadosCadastroRegistroKm;
+import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,9 +27,6 @@ public class RegistroKm {
     @JoinColumn(name = "motoboy_id", nullable = false)
     private Motoboy motoboy;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
 
     private LocalDate data= LocalDate.now();
 
@@ -44,15 +42,14 @@ public class RegistroKm {
 
     private LocalDateTime criadoEm= LocalDateTime.now();
 
-    private RegistroKm (DadosCadastroRegistroKm dados,Motoboy motoboy,Usuario usuario){
+    public RegistroKm (DadosCadastroRegistroKm dados,Motoboy motoboy){
         this.motoboy=motoboy;
-        this.usuario=usuario;
         this.data= dados.data();
         this.kmEntrada=dados.kmInicio();
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
         this.kmFim=dados.kmFim();
-        this.observacao=dados.observacao();
+
     }
 
 

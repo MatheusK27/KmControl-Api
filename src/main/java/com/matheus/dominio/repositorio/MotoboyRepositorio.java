@@ -4,8 +4,11 @@ import com.matheus.dominio.entidades.Motoboy;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MotoboyRepositorio extends JpaRepository<Motoboy, Long> {
 
     List<Motoboy> findByAtivoTrue();
+    Boolean existsByPlaca(String placa);
+
 }

@@ -3,6 +3,7 @@ package com.matheus.dominio.service;
 
 import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
+import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 
 import com.matheus.dominio.entidades.Abastecimento;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class AbastecimentoService {
@@ -29,7 +31,7 @@ public class AbastecimentoService {
 
 
     public DadosDetalhamentoAbastecimento cadastroAbastecimento(DadosCadastroAbastecimento dados) {
-        if(dados.litros().compareTo(BigDecimal.ZERO)>8 ){
+        if(dados.litros().compareTo(BigDecimal.valueOf(8))>0){
         throw new RuntimeException("Limite de abastecimento excedido, permitido somente 8");
         }
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
@@ -48,14 +50,19 @@ public class AbastecimentoService {
         return new DadosDetalhamentoAbastecimento(dadosAtualizados);
     }
 
+    public void excluirAbastecimento(Long id ) {
+       var abastecimento= repositorio.findById(id).orElseThrow(()-> new RuntimeException("Abastecimento não encontrado"));
+       repositorio.delete(abastecimento);
+    }
 
-
+    public List<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorUsuario(Long id){
+        var abastecimentos= repositorio.findByMotoboyId(id);
+        return abastecimentos.stream().map(DadosDetalhamentoAbastecimento::new).toList();
+    }
 
     private double calculoCombustivel(Abastecimento abastecimento) {
         BigDecimal valorTotalCombustivel = abastecimento.getValorLitro().multiply(abastecimento.getLitros());
         return valorTotalCombustivel.doubleValue();
     }
-
-
 
 }

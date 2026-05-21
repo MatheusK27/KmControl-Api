@@ -1,8 +1,8 @@
 package com.matheus.controller;
 
 
-import com.matheus.dominio.dto.DadosCadastroMotoboy;
-import com.matheus.dominio.dto.DadosDetalhamentoMotoboy;
+import com.matheus.dominio.dtoEntrada.DadosCadastroMotoboy;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.service.MotoboyServico;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

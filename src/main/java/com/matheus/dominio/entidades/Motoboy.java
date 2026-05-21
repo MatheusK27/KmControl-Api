@@ -1,7 +1,7 @@
 package com.matheus.dominio.entidades;
 
 
-import com.matheus.dominio.dto.DadosCadastroMotoboy;
+import com.matheus.dominio.dtoEntrada.DadosCadastroMotoboy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

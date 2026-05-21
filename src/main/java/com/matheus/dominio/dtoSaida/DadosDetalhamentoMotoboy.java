@@ -1,4 +1,4 @@
-package com.matheus.dominio.dto;
+package com.matheus.dominio.dtoSaida;
 
 import com.matheus.dominio.entidades.Motoboy;
 

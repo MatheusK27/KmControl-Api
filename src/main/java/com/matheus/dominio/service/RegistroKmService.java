@@ -1,10 +1,8 @@
 package com.matheus.dominio.service;
 
-import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
-import com.matheus.dominio.dto.DadosCadastroRegistroKm;
-import com.matheus.dominio.dto.DadosDetalhamentoAbastecimento;
-import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
-import com.matheus.dominio.entidades.Motoboy;
+import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
+import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.entidades.RegistroKm;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.RegistroKmRepositorio;

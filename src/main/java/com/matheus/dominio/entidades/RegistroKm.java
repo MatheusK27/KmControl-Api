@@ -1,9 +1,8 @@
 package com.matheus.dominio.entidades;
 
 
-import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
-import com.matheus.dominio.dto.DadosCadastroRegistroKm;
-import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
+import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
+import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,16 +43,6 @@ public class RegistroKm {
     private LocalDateTime criadoEm= LocalDateTime.now();
 
     public RegistroKm (DadosCadastroRegistroKm dados,Motoboy motoboy){
-        this.motoboy=motoboy;
-        this.data= dados.data();
-        this.kmEntrada=dados.kmInicio();
-        this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
-        this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
-        this.kmFim=dados.kmFim();
-
-    }
-
-    public RegistroKm(DadosAtualizarRegistroKm dados, Motoboy motoboy) {
         this.motoboy=motoboy;
         this.data= dados.data();
         this.kmEntrada=dados.kmInicio();

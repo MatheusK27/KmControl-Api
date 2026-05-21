@@ -1,4 +1,4 @@
-package com.matheus.dominio.dto;
+package com.matheus.dominio.dtoEntrada;
 
 import jakarta.validation.constraints.NotNull;
 

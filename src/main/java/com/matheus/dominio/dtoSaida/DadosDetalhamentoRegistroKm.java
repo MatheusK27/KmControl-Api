@@ -1,8 +1,6 @@
-package com.matheus.dominio.dto;
+package com.matheus.dominio.dtoSaida;
 
-import com.matheus.dominio.entidades.Motoboy;
 import com.matheus.dominio.entidades.RegistroKm;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 

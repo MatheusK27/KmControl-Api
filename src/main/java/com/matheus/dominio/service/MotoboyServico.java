@@ -1,8 +1,8 @@
 package com.matheus.dominio.service;
 
 
-import com.matheus.dominio.dto.DadosCadastroMotoboy;
-import com.matheus.dominio.dto.DadosDetalhamentoMotoboy;
+import com.matheus.dominio.dtoEntrada.DadosCadastroMotoboy;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.entidades.Motoboy;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,8 @@
 package com.matheus.controller;
 
 
-import com.matheus.dominio.dto.DadosCadastroUsuario;
-import com.matheus.dominio.dto.DadosDetalhamentoMotoboy;
-import com.matheus.dominio.dto.DadosDetalhamentoUsuario;
-import com.matheus.dominio.entidades.Usuario;
+import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoUsuario;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import com.matheus.dominio.service.UsuarioServico;
 import jakarta.transaction.Transactional;

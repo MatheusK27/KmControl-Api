@@ -1,9 +1,8 @@
 package com.matheus.controller;
 
-import com.matheus.dominio.dto.DadosAtualizarRegistroKm;
-import com.matheus.dominio.dto.DadosCadastroRegistroKm;
-import com.matheus.dominio.dto.DadosDetalhamentoRegistroKm;
-import com.matheus.dominio.entidades.Motoboy;
+import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
+import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.service.RegistroKmService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

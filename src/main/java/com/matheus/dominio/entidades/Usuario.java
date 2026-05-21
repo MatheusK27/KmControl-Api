@@ -1,7 +1,7 @@
 package com.matheus.dominio.entidades;
 
 
-import com.matheus.dominio.dto.DadosCadastroUsuario;
+import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;

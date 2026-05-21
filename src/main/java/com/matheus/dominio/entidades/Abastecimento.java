@@ -50,10 +50,11 @@
         private LocalDateTime criadoEm = LocalDateTime.now();
 
 
-        public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy,Usuario usuario ) {
+        public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy,Usuario usuario,  Posto posto ) {
             this.motoboy=motoboy;
             this.usuario=usuario;
             this.data= dados.data();
+            this.posto= posto;
             this.kmMomento=dados.kmMomento();
             this .litros = dados.litros();
             this.valorLitro=dados.valorLitro();

@@ -12,8 +12,4 @@ public record DadosDetalhamentoPosto(Long Id, String nome) {
     }
 
 
-    public DadosDetalhamentoPosto(Abastecimento abastecimento) {
-        this(abastecimento.getMotoboy().getId(), abastecimento.getMotoboy().getNome());
-    }
-
 }

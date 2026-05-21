@@ -14,7 +14,9 @@ public record DadosCadastroAbastecimento(
         @NotNull Integer kmMomento,
         @NotNull BigDecimal litros,
         @NotNull BigDecimal valorLitro,
-        @NotNull Long postoId
+        @NotNull Long postoId,
+        boolean ativo
+
 
         ) {
 }

@@ -14,7 +14,7 @@ public record DadosCadastroAbastecimento(
         @NotNull Integer kmMomento,
         @NotNull BigDecimal litros,
         @NotNull BigDecimal valorLitro,
-        @NotBlank String posto
+        @NotNull Long postoId
 
         ) {
 }

@@ -10,4 +10,5 @@ import java.util.List;
 public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     List<Abastecimento> findByMotoboyId(Long motoboyId);
     List<Abastecimento> findByDataBetween(LocalDate inicio, LocalDate fim);
+    List<Abastecimento> findByPostoId(Long postoId);
 }

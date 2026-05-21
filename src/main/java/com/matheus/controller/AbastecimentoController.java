@@ -4,7 +4,9 @@ import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
 
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoPosto;
 import com.matheus.dominio.service.AbastecimentoService;
+import com.matheus.dominio.service.PostoSevice;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class AbastecimentoController {
 
     @Autowired
     private AbastecimentoService service;
+
+    @Autowired
+    private PostoSevice postoSevice;
 
     @PostMapping
     @Transactional
@@ -41,11 +46,19 @@ public class AbastecimentoController {
         service.excluirAbastecimento(id);
     }
 
-    @GetMapping("/{id}")
-    @Transactional
+    @GetMapping("/motoboy/{id}")
     public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id){
        var lista= service.buscarAbastecimentosPorMotoboyId(id);
         return ResponseEntity.ok().body(lista);
     }
+
+
+    @GetMapping("/posto/{id}")
+    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPostoId(@PathVariable Long id){
+        var lista= postoSevice.detalharAbastecimentosPostoId(id);
+        return ResponseEntity.ok().body(lista);
+    }
+
+
 
 }

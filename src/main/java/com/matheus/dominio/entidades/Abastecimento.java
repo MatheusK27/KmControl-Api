@@ -32,6 +32,10 @@
         @JoinColumn(name = "usuario_id", nullable = false)
         private Usuario usuario;
 
+        @ManyToOne
+        @JoinColumn(name = "posto_id")
+        private Posto posto;
+
         private LocalDate data = LocalDate.now();
 
         private Integer  kmMomento;
@@ -43,8 +47,6 @@
 
         private BigDecimal valorTotal;
 
-        private String posto;
-
         private LocalDateTime criadoEm = LocalDateTime.now();
 
 
@@ -55,7 +57,6 @@
             this.kmMomento=dados.kmMomento();
             this .litros = dados.litros();
             this.valorLitro=dados.valorLitro();
-            this.posto=dados.posto();
 
         }
 
@@ -72,9 +73,7 @@
             if (dados.valorLitro()!=null){
                 this.valorLitro=dados.valorLitro();
             }
-            if (dados.posto()!=null){
-                this.posto=dados.posto();
-            }
+
         }
 
     }

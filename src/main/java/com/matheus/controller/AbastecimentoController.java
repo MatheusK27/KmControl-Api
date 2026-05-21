@@ -43,10 +43,9 @@ public class AbastecimentoController {
 
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorUsuario(@PathVariable Long id){
-       var lista= service.buscarAbastecimentosPorUsuario(id);
+    public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id){
+       var lista= service.buscarAbastecimentosPorMotoboyId(id);
         return ResponseEntity.ok().body(lista);
     }
-
 
 }

@@ -55,7 +55,7 @@ public class AbastecimentoService {
        repositorio.delete(abastecimento);
     }
 
-    public List<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorUsuario(Long id){
+    public List<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long id){
         var abastecimentos= repositorio.findByMotoboyId(id);
         return abastecimentos.stream().map(DadosDetalhamentoAbastecimento::new).toList();
     }

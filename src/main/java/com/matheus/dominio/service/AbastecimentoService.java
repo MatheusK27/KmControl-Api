@@ -6,6 +6,7 @@ import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 
 import com.matheus.dominio.entidades.Abastecimento;
+import com.matheus.dominio.entidades.Usuario;
 import com.matheus.dominio.repositorio.AbastecimentoRepositorio;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
@@ -46,7 +47,6 @@ public class AbastecimentoService {
         repositorio.save(dadosAtualizados);
         return new DadosDetalhamentoAbastecimento(dadosAtualizados);
     }
-
 
 
 

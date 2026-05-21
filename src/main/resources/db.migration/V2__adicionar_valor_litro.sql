@@ -1,1 +1,0 @@
-ALTER TABLE abastecimento ADD COLUMN valor_litro DECIMAL(10,2);

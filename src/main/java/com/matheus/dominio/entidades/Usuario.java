@@ -2,6 +2,7 @@ package com.matheus.dominio.entidades;
 
 
 import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
+import com.matheus.enums.TipoUsuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,10 @@ public class Usuario  implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
+        @Column(name = "tipo_usuario")
+        @Enumerated(EnumType.STRING)
+        private TipoUsuario tipoUsuario;
+
     private boolean ativo = true;
 
     @Column(name = "criado_em", nullable = false, updatable = false)
@@ -45,12 +50,13 @@ public class Usuario  implements UserDetails {
         this.nome= dados.nome();
         this.login = dados.login();
         this.senha = new BCryptPasswordEncoder().encode(dados.senha());
+        this.tipoUsuario= TipoUsuario.USUARIO;
 
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of( new SimpleGrantedAuthority("ROLE_USUARIO"));
+        return List.of( new SimpleGrantedAuthority("ROLE_" + this.tipoUsuario.name()));
     }
 
     @Override

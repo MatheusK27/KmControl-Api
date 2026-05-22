@@ -6,6 +6,7 @@ import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.service.MotoboyServico;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ import java.util.List;
         @PostMapping
         public ResponseEntity<DadosDetalhamentoMotoboy> cadastrarMotoboy(@RequestBody @Valid DadosCadastroMotoboy dados){
             var motoboy= servico.cadastrarMotoboy(dados);
-            return ResponseEntity.created(URI.create("/motoboys/" + motoboy.id())).body(motoboy);
+            return ResponseEntity.status(HttpStatus.CREATED).body(motoboy);
         }
 
     @GetMapping

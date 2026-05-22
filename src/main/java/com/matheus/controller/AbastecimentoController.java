@@ -9,15 +9,22 @@ import com.matheus.dominio.service.AbastecimentoService;
 import com.matheus.dominio.service.PostoSevice;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/abastecimento")
+@Validated
 public class AbastecimentoController {
 
     @Autowired
@@ -30,7 +37,7 @@ public class AbastecimentoController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoAbastecimento> cadastroAbastecimento(@RequestBody @Valid DadosCadastroAbastecimento dados){
         var abastecimento = service.cadastroAbastecimento(dados);
-        return ResponseEntity.ok().body(abastecimento);
+        return ResponseEntity.status(HttpStatus.CREATED).body(abastecimento);
     }
 
     @PutMapping("/{id}")
@@ -42,23 +49,29 @@ public class AbastecimentoController {
     }
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public void excluirAbastecimento(@PathVariable Long id){
+    public ResponseEntity excluirAbastecimento(@PathVariable Long id){
         service.excluirAbastecimento(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/motoboy/{id}")
-    public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id){
-       var lista= service.buscarAbastecimentosPorMotoboyId(id);
+    public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id, Pageable pagina){
+       var lista= service.buscarAbastecimentosPorMotoboyId(id, pagina);
         return ResponseEntity.ok().body(lista);
     }
 
 
     @GetMapping("/posto/{id}")
-    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPostoId(@PathVariable Long id){
-        var lista= postoSevice.detalharAbastecimentosPostoId(id);
+    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPostoId(@PathVariable Long id,Pageable pagina){
+        var lista= service.detalharAbastecimentosPostoId(id,pagina);
         return ResponseEntity.ok().body(lista);
     }
 
+    @GetMapping("/mes")
+    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPorMes(@RequestParam @Min(1) @Max(12) int mes,Pageable pagina){
+        var lista=service.detalharAbastecimentosPorMes(mes,pagina);
+        return ResponseEntity.ok().body(lista);
+    }
 
 
 }

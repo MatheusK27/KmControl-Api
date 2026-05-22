@@ -40,10 +40,6 @@ public class PostoSevice {
         return new DadosDetalhamentoPosto(posto);
     }
 
-    public List<DadosDetalhamentoAbastecimento> detalharAbastecimentosPostoId(Long id){
-        var lista= abastecimentoRepositorio.findByPostoId(id).stream().map(DadosDetalhamentoAbastecimento::new).toList();
-        return lista;
-    }
 
 
 

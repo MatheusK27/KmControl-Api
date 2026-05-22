@@ -8,6 +8,7 @@ import com.matheus.dominio.service.UsuarioServico;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class UsuarioController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoUsuario> cadastroUsuario(@RequestBody @Valid DadosCadastroUsuario dados) {
         var usuario= servico.cadastrarUsuario(dados);
-        return  ResponseEntity.ok().body(usuario);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(usuario);
     }
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity excluirUsuario(@PathVariable Long id){

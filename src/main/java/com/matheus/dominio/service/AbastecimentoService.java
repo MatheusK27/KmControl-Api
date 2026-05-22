@@ -13,6 +13,8 @@ import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.PostoRepositorio;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -61,11 +63,24 @@ public class AbastecimentoService {
     public void excluirAbastecimento(Long id ) {
        var abastecimento= repositorio.findById(id).orElseThrow(()-> new RuntimeException("Abastecimento não encontrado"));
        repositorio.delete(abastecimento);
+
     }
 
-    public List<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long id){
-        var abastecimentos= repositorio.findByMotoboyId(id);
-        return abastecimentos.stream().map(DadosDetalhamentoAbastecimento::new).toList();
+    public Page<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long id, Pageable pagina) {
+        var lista= repositorio.findByMotoboyId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
+        return lista;
+
+    }
+
+
+    public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPostoId(Long id,  Pageable pagina) {
+        var lista= repositorio.findByPostoId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
+        return lista;
+    }
+    public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPorMes(int mes, Pageable pagina) {
+        var lista= repositorio.buscarPorMes(mes,pagina).map(DadosDetalhamentoAbastecimento::new);
+        return lista;
+
     }
 
     private double calculoCombustivel(Abastecimento abastecimento) {

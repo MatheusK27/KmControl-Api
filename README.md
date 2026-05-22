@@ -1,82 +1,183 @@
-# 🏍️ KmControl API
 
-API REST desenvolvida com Java e Spring Boot para controle de quilometragem, abastecimento e uso de motos por motoboys.
+# 🚀 KmControl API
 
----
+API REST desenvolvida para controle de operações de motoboys, abastecimentos e registros de quilometragem.
 
-## 📌 Sobre o projeto
-
-O **KmControl API** nasceu para resolver um problema real de controle operacional: o registro manual de quilometragem das motos utilizadas por motoboys.
-
-Em muitas empresas, o controle de KM de entrada, KM de saída, abastecimento e uso diário das motos ainda é feito em papel ou planilhas, o que aumenta o risco de erros, perda de informações e dificuldade para acompanhar os custos.
-
-Esta API tem como objetivo centralizar esses registros em um sistema backend, permitindo maior controle sobre:
-
-- Qual motoboy utilizou determinada moto
-- Quantos quilômetros foram rodados
-- Quando houve abastecimento
-- Qual foi o consumo médio da moto
-- Histórico de uso por moto e por motoboy
+O sistema foi criado para resolver um problema real de controle manual de:
+- 🛵 KM inicial e final das motos
+- ⛽ Abastecimentos
+- 📊 Consumo de combustível
+- 📋 Controle operacional de motoboys
 
 ---
 
-## 🚧 Status do projeto
+# 🛠️ Tecnologias utilizadas
 
-Em desenvolvimento.
+- ☕ Java 21
+- 🌱 Spring Boot
+- 🔐 Spring Security
+- 🎟️ JWT Authentication
+- 🗄️ Spring Data JPA
+- 🐘 PostgreSQL
+- 📦 Maven
+- ⚙️ Hibernate
+- ✅ Bean Validation
 
 ---
 
-## 🎯 Objetivo
+# ✨ Funcionalidades
 
-Criar uma API para substituir o controle manual de quilometragem e abastecimento das motos da empresa, oferecendo uma base organizada para futuras telas, relatórios e dashboards.
-
----
-
-## ⚙️ Funcionalidades planejadas
-
+## 🛵 Motoboys
 - Cadastro de motoboys
-- Cadastro de motos
-- Registro de saída da moto
-- Registro de retorno da moto
-- Controle de KM inicial e KM final
-- Cálculo automático de KM rodado
-- Registro de abastecimentos
-- Cálculo de média de consumo
-- Histórico de uso por motoboy
-- Histórico de uso por moto
-- Relatórios operacionais
+- Atualização de dados
+- Ativação/desativação
+- Listagem de motoboys
+
+## 📍 Registros de KM
+- Registro de KM inicial/final
+- Controle de utilização da moto
+- Histórico de registros
+
+## ⛽ Abastecimentos
+- Cadastro de abastecimentos
+- Associação com motoboy e posto
+- Cálculo de consumo
+- Histórico de abastecimentos
+
+## 🔐 Segurança
+- Autenticação com JWT
+- Rotas protegidas
+- Controle de acesso
 
 ---
 
-## 🧠 Regras de negócio previstas
+# 📂 Estrutura do Projeto
 
-- O KM final não pode ser menor que o KM inicial
-- Cada registro de uso deve armazenar data, motoboy, moto, KM inicial e KM final
-- Abastecimentos devem estar vinculados a uma moto
-- A média de consumo pode ser calculada com base em KM rodado e litros abastecidos
-
----
-
-## 🛠️ Tecnologias utilizadas
-
-- Java
-- Spring Boot
-- Spring Web
-- Spring Data JPA
-- Hibernate
-- Banco de dados relacional
-- Maven
-- Lombok
+```text
+src/main/java
+ ├── controller
+ ├── service
+ ├── repository
+ ├── domain
+ ├── dto
+ ├── infra
+ └── security
+```
 
 ---
 
-## 📁 Estrutura esperada
+# ▶️ Como executar o projeto
+
+## 1️⃣ Clonar repositório
 
 ```bash
-src/main/java
-├── controller
-├── service
-├── repository
-├── domain
-├── dto
-└── infra
+git clone https://github.com/MatheusK27/KmControl-Api.git
+```
+
+---
+
+## 2️⃣ Configurar variáveis de ambiente
+
+```env
+DB_URL=jdbc:postgresql://localhost:5432/motoboy_db
+DB_USERNAME=postgres
+DB_PASSWORD=sua_senha
+JWT_SECRET=sua_chave_jwt
+```
+
+---
+
+## 3️⃣ Executar aplicação
+
+```bash
+./mvnw spring-boot:run
+```
+
+---
+
+# 🌐 Endpoints principais
+
+## 🔑 Autenticação
+
+### Login
+
+```http
+POST /login
+```
+
+Body:
+
+```json
+{
+  "login": "admin",
+  "senha": "123456"
+}
+```
+
+---
+
+# 🛵 Motoboys
+
+### ➕ Cadastrar motoboy
+
+```http
+POST /motoboys
+```
+
+### 📋 Listar motoboys
+
+```http
+GET /motoboys
+```
+
+### ✏️ Atualizar motoboy
+
+```http
+PUT /motoboys/{id}
+```
+
+---
+
+# ⛽ Abastecimentos
+
+### ➕ Registrar abastecimento
+
+```http
+POST /abastecimento
+```
+
+### 📜 Buscar abastecimentos por motoboy
+
+```http
+GET /abastecimento/motoboy/{id}
+```
+
+---
+
+# 📏 Regras de negócio
+
+- ❌ Motoboy inativo não pode operar
+- 🚫 KM final não pode ser menor que KM inicial
+- ✅ Abastecimentos devem possuir motoboy válido
+- 📚 O sistema mantém histórico operacional das motos
+
+---
+# 🚧 PROJETO EM DESENVIMENTO
+# 🚧 Melhorias futuras
+
+- 📊 Dashboard web
+- 📈 Relatórios de consumo
+- ☁️ Deploy em nuvem
+- 🐳 Docker
+- 🧪 Testes automatizados
+- 💰 Controle financeiro
+- 📎 Upload de comprovantes
+
+---
+
+# 👨‍💻 Autor
+
+Matheus Klein
+
+🔗 GitHub:
+https://github.com/MatheusK27

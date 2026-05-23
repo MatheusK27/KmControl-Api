@@ -17,11 +17,16 @@ public class Posto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    private String cnpj;
+    private String telefone;
+    private String email;
+    private String cidade;
     private boolean ativo= true;
 
     public Posto(DadosCadastroPosto dados) {
         this.id = dados.Id();
         this.nome= dados.nome();
+
 
     }
 

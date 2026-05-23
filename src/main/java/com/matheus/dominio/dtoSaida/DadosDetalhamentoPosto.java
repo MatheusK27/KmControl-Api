@@ -6,10 +6,9 @@ import com.matheus.dominio.entidades.Posto;
 
 import java.util.List;
 
-public record DadosDetalhamentoPosto(Long Id, String nome) {
+public record DadosDetalhamentoPosto(Long Id, String nome,String telefone) {
     public DadosDetalhamentoPosto(Posto posto) {
-        this(posto.getId(),  posto.getNome());
+        this(posto.getId(),  posto.getNome(),posto.getTelefone());
     }
-
 
 }

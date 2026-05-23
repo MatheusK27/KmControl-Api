@@ -11,4 +11,7 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
     List<RegistroKm> findByMotoboyId(Long motoboyId);
     List<RegistroKm> findByData(LocalDate data);
     Optional<RegistroKm> findByMotoboyIdAndData(Long id, LocalDate data);
+    Optional<RegistroKm> findTopByMotoboyIdOrderByKmFimDesc(Long MotoboyId);
+
+    boolean existsByMotoboyIdAndKmFimIsNull(Long id);
 }

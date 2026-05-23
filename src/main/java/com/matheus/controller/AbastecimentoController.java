@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/abastecimento")
@@ -30,8 +30,6 @@ public class AbastecimentoController {
     @Autowired
     private AbastecimentoService service;
 
-    @Autowired
-    private PostoSevice postoSevice;
 
     @PostMapping
     @Transactional
@@ -55,20 +53,20 @@ public class AbastecimentoController {
     }
 
     @GetMapping("/motoboy/{id}")
-    public ResponseEntity <List<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id, Pageable pagina){
+    public ResponseEntity <Page<DadosDetalhamentoAbastecimento>> buscarAbastecimentosPorMotoboyId(@PathVariable Long id, Pageable pagina){
        var lista= service.buscarAbastecimentosPorMotoboyId(id, pagina);
         return ResponseEntity.ok().body(lista);
     }
 
 
     @GetMapping("/posto/{id}")
-    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPostoId(@PathVariable Long id,Pageable pagina){
+    public ResponseEntity<Page<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPostoId(@PathVariable Long id,Pageable pagina){
         var lista= service.detalharAbastecimentosPostoId(id,pagina);
         return ResponseEntity.ok().body(lista);
     }
 
     @GetMapping("/mes")
-    public ResponseEntity<List<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPorMes(@RequestParam @Min(1) @Max(12) int mes,Pageable pagina){
+    public ResponseEntity<Page<DadosDetalhamentoAbastecimento>> detalharAbastecimentosPorMes(@RequestParam @Min(1) @Max(12) int mes, Pageable pagina){
         var lista=service.detalharAbastecimentosPorMes(mes,pagina);
         return ResponseEntity.ok().body(lista);
     }

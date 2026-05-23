@@ -1,5 +1,6 @@
 package com.matheus.dominio.dtoEntrada;
 
+import com.matheus.dominio.entidades.Motoboy;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,9 +15,6 @@ public record DadosCadastroAbastecimento(
         @NotNull Integer kmMomento,
         @NotNull BigDecimal litros,
         @NotNull BigDecimal valorLitro,
-        @NotNull Long postoId,
-        boolean ativo
-
-
+        @NotNull Long postoId
         ) {
 }

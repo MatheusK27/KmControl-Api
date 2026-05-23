@@ -1,0 +1,9 @@
+ALTER TABLE posto
+    ADD COLUMN cnpj VARCHAR(14),
+
+ADD COLUMN telefone VARCHAR(20),
+
+ADD COLUMN email VARCHAR(100);
+
+ALTER TABLE posto
+    ADD CONSTRAINT uk_posto_cnpj UNIQUE (cnpj);

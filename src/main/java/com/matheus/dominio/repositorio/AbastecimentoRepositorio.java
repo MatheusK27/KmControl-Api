@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     Page<Abastecimento> findByMotoboyId(Long motoboyId, Pageable pageable);
@@ -21,4 +22,10 @@ public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, L
             WHERE MONTH(a.criadoEm) = :mes
 """)
     Page<Abastecimento> buscarPorMes(@Param("mes") int mes,Pageable pageable);
+
+    Optional<Abastecimento> findTopByMotoboyIdOrderByKmMomentoDesc(Long id);
+
+
+
+
 }

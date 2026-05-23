@@ -1,0 +1,2 @@
+ALTER TABLE posto
+    ADD COLUMN cidade VARCHAR(100);

@@ -3,22 +3,22 @@ package com.matheus.dominio.service;
 
 import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
-import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 
 import com.matheus.dominio.entidades.Abastecimento;
-import com.matheus.dominio.entidades.Usuario;
+
 import com.matheus.dominio.repositorio.AbastecimentoRepositorio;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.PostoRepositorio;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
+
 
 @Service
 public class AbastecimentoService {
@@ -37,15 +37,39 @@ public class AbastecimentoService {
 
 
     public DadosDetalhamentoAbastecimento cadastroAbastecimento(DadosCadastroAbastecimento dados) {
-        if(dados.litros().compareTo(BigDecimal.valueOf(8))>0){
-            throw new RuntimeException("Limite de abastecimento excedido, permitido somente 8");
+
+        BigDecimal limiteMaximo=BigDecimal.valueOf(8);
+
+        if(dados.litros().compareTo(limiteMaximo)>0){
+            throw new ValidationException("Limite de abastecimento excedido, permitido somente 8 litros de combustivél ");
         }
-        if(!dados.ativo()){
-            throw  new RuntimeException("Não é permitido cadastrar abastecimento com posto inativo");
+
+        if(dados.litros().compareTo(BigDecimal.ZERO)<=0){
+            throw  new ValidationException("Litros deve ser maior que zero");
+        }
+
+
+        var ultimoAbastec = repositorio.findTopByMotoboyIdOrderByKmMomentoDesc(dados.motoboyId());
+
+        if(ultimoAbastec.isPresent()){
+
+            var ultimoKm = ultimoAbastec.get().getKmMomento();
+
+            if(dados.kmMomento()<ultimoKm){
+                 throw new ValidationException("KM não pode ser menor que o último abastecimento registrado ");
+
+            }
+        }
+
+        if(!motoboyRepositorio.existsById(dados.motoboyId())){
+            throw new RuntimeException("Motoboy inativo");
         }
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
         var usuario= usuarioRepositorio.findById(dados.usuarioId()).orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
         var posto = postoRepositorio.findById(dados.postoId()).orElseThrow(() -> new RuntimeException("Posto não encontrado"));
+        if (!posto.isAtivo()){
+            throw new RuntimeException("Não é possivel cadastrar abastecimento com posto inativo");
+        }
         var abastecimento= new Abastecimento(dados, motoboy,usuario,posto);
         var total = calculoCombustivel(abastecimento);
         abastecimento.setValorTotal(BigDecimal.valueOf(total));

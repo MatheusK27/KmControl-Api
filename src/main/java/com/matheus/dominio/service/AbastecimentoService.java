@@ -26,13 +26,8 @@ import java.math.BigDecimal;
 public class AbastecimentoService {
 
     private final AbastecimentoRepositorio repositorio;
-
-
     private final MotoboyRepositorio motoboyRepositorio;
-
     private final UsuarioRepositorio usuarioRepositorio;
-
-
     private final PostoRepositorio postoRepositorio;
 
 
@@ -51,12 +46,8 @@ public class AbastecimentoService {
         var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
         var usuario= usuarioRepositorio.findById(dados.usuarioId()).orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
         var posto = postoRepositorio.findById(dados.postoId()).orElseThrow(() -> new RuntimeException("Posto não encontrado"));
-        if (!posto.isAtivo()){
-            throw new RuntimeException("Não é possivel cadastrar abastecimento com posto inativo");
-        }
+        posto.validarAtivo();
         var abastecimento= new Abastecimento(dados, motoboy,usuario,posto);
-        var total = calculoCombustivel(abastecimento);
-        abastecimento.setValorTotal(BigDecimal.valueOf(total));
         repositorio.save(abastecimento);
         return new DadosDetalhamentoAbastecimento(abastecimento);
     }
@@ -84,14 +75,11 @@ public class AbastecimentoService {
         return repositorio.findByPostoId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
     }
     public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPorMes(int mes, Pageable pagina) {
-        var lista= repositorio.buscarPorMes(mes,pagina).map(DadosDetalhamentoAbastecimento::new);
-        return lista;
+        return repositorio.buscarPorMes(mes,pagina).map(DadosDetalhamentoAbastecimento::new);
+
 
     }
 
-    private double calculoCombustivel(Abastecimento abastecimento) {
-        BigDecimal valorTotalCombustivel = abastecimento.getValorLitro().multiply(abastecimento.getLitros());
-        return valorTotalCombustivel.doubleValue();
-    }
+
 
 }

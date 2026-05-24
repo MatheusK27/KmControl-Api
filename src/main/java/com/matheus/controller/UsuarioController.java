@@ -7,6 +7,7 @@ import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import com.matheus.dominio.service.UsuarioServico;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
+@RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioRepositorio repositorio;
-
-    @Autowired
-    private UsuarioServico servico;
+    private final UsuarioServico servico;
 
     @PostMapping
     @Transactional

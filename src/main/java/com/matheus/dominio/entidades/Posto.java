@@ -2,6 +2,7 @@ package com.matheus.dominio.entidades;
 
 import com.matheus.dominio.dtoEntrada.DadosCadastroPosto;
 import jakarta.persistence.*;
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,12 @@ public class Posto {
         this.id = dados.Id();
         this.nome= dados.nome();
 
+    }
 
+    public void validarAtivo(){
+        if(!this.ativo){
+            throw new ValidationException("Posto precisar estar ativo");
+        }
     }
 
     public void desativarPosto(Long id){

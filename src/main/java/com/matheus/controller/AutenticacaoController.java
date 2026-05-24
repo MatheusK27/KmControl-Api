@@ -5,6 +5,7 @@ import com.matheus.dominio.dtoEntrada.DadosLogin;
 import com.matheus.dominio.entidades.Usuario;
 import com.matheus.seguranca.TokenService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,13 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class AutenticacaoController {
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
 
-    @Autowired
-    private AuthenticationManager manager;
+    private final  AuthenticationManager manager;
 
     @PostMapping
     public ResponseEntity<String> login(@RequestBody @Valid DadosLogin dados) {

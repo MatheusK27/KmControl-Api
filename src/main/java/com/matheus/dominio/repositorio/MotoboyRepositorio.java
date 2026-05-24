@@ -2,6 +2,8 @@ package com.matheus.dominio.repositorio;
 
 import com.matheus.dominio.entidades.Motoboy;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,11 +12,12 @@ import java.util.Optional;
 
 public interface MotoboyRepositorio extends JpaRepository<Motoboy, Long> {
 
-    List<Motoboy> findByAtivoTrue();
+    Page<Motoboy> findByAtivoTrue(Pageable pageable);
     Boolean existsByPlaca(String placa);
 
     Optional<Motoboy> findByPlaca(String placa);
 
     boolean existsByCnh(String cnh);
 
+    boolean existsByCnhAndIdNot(String cnh,Long id);
 }

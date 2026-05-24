@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +25,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/abastecimento")
-@Validated
+@RequiredArgsConstructor
 public class AbastecimentoController {
 
-    @Autowired
-    private AbastecimentoService service;
+    private final AbastecimentoService service;
 
 
     @PostMapping

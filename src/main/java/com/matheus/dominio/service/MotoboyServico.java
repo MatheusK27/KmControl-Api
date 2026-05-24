@@ -9,12 +9,11 @@ import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.RegistroKmRepositorio;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +30,8 @@ public class    MotoboyServico {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"JÁ EXISTE UM MOTOBOY COM ESSA PLACA");
     }
 
-
         if(repositorio.existsByCnh(dados.cnh())){
         throw  new ValidationException("Já existe motoboy cadastrado com esse CNH");
-
     }
         var motoboy = new Motoboy(dados);
         repositorio.save(motoboy);
@@ -42,10 +39,8 @@ public class    MotoboyServico {
     }
 
 
-    public List<DadosDetalhamentoMotoboy> listarMotoboy() {
-        var lista  = repositorio.findByAtivoTrue().stream().map(DadosDetalhamentoMotoboy::new).toList();
-        return lista;
-
+    public Page<DadosDetalhamentoMotoboy> listarMotoboy(Pageable pagina ) {
+        return repositorio.findByAtivoTrue(pagina).map(DadosDetalhamentoMotoboy::new);
     }
 
     public DadosDetalhamentoMotoboy buscarPorId(Long id) {
@@ -59,8 +54,11 @@ public class    MotoboyServico {
 
     public DadosDetalhamentoMotoboy atualizarMotoboy(DadosAtualizarMotoboy dados,Long id) {
         var motoboy =repositorio.findById(id).orElseThrow(()-> new RuntimeException("Motoboy não encontrado"));
+
+        if(repositorio.existsByCnhAndIdNot(dados.cnh(),id)){
+            throw  new ValidationException("Já existe motoboy cadastrado com esse CNH");
+        }
         motoboy.atualizarMotoboy(dados);
-        repositorio.save(motoboy);
         return new DadosDetalhamentoMotoboy(motoboy);
     }
 
@@ -69,7 +67,7 @@ public class    MotoboyServico {
             throw new ValidationException("Motoboy possui registro de KM em aberto");
         }
         var motoboy=repositorio.getReferenceById(id);
-        motoboy.setAtivo(false);
+        motoboy.desativarMotoboy();
     }
 
 }

@@ -93,6 +93,10 @@
 
         }
 
+        public BigDecimal calculoCombustivel() {
+             return getValorLitro().multiply(getLitros());
+        }
+
     }
 
 

@@ -23,8 +23,6 @@ public class PostoSevice {
 
     private final AbastecimentoRepositorio abastecimentoRepositorio;
 
-
-
     public DadosDetalhamentoPosto cadastrarPosto(DadosCadastroPosto dados) {
         var posto = new Posto(dados);
         repositorio.save(posto);

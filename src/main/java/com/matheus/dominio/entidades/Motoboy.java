@@ -58,5 +58,8 @@ public class Motoboy {
             this.telefone= dados.telefone();
         }
     }
+    public void desativarMotoboy() {
+        this.ativo= false;
+    }
 }
 

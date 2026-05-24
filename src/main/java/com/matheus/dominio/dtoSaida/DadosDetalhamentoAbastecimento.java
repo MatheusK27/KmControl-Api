@@ -8,10 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record DadosDetalhamentoAbastecimento(Integer kmMomento, LocalDate data,
-                                             BigDecimal valorLitro, BigDecimal valorTotal,Long idMotoboy,Long idPosto) {
+                                             BigDecimal valorLitro, Long idMotoboy,Long idPosto, BigDecimal valorCombustivel) {
 
     public DadosDetalhamentoAbastecimento(Abastecimento abastecimento) {
         this(abastecimento.getKmMomento(),abastecimento.getData(),
-                abastecimento.getValorLitro(),abastecimento.getValorTotal(),abastecimento.getMotoboy().getId(),abastecimento.getPosto().getId());
+                abastecimento.getValorLitro(),abastecimento.getMotoboy().getId(),abastecimento.getPosto().getId(),
+                abastecimento.calculoCombustivel());
     }
+
+
 }

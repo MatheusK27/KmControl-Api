@@ -8,6 +8,7 @@ import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.service.RegistroKmService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +20,11 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/registro")
+@RequiredArgsConstructor
 public class RegistroKmController {
 
-    @Autowired
-    private RegistroKmService servico;
+
+    private final RegistroKmService servico;
 
     @PostMapping
     @Transactional

@@ -7,7 +7,10 @@ import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.service.MotoboyServico;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +21,10 @@ import java.util.List;
 
     @RestController
     @RequestMapping("/motoboys")
-
+    @RequiredArgsConstructor
     public class MotoboyController {
 
-        @Autowired
-        private MotoboyServico servico;
+        private final MotoboyServico servico;
 
         @PostMapping
         @PreAuthorize("hasRole('ADMIN')")
@@ -32,8 +34,8 @@ import java.util.List;
         }
 
     @GetMapping
-    public ResponseEntity<List<DadosDetalhamentoMotoboy>> listarMotoboy(){
-        return ResponseEntity.ok(servico.listarMotoboy());
+    public ResponseEntity<Page<DadosDetalhamentoMotoboy>> listarMotoboy(Pageable pagina){
+        return ResponseEntity.ok(servico.listarMotoboy(pagina));
     }
 
     @GetMapping("/{id}")

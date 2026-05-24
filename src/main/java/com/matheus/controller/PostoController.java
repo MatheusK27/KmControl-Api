@@ -6,6 +6,7 @@ import com.matheus.dominio.dtoSaida.DadosDetalhamentoPosto;
 import com.matheus.dominio.service.PostoSevice;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/posto")
+@RequiredArgsConstructor
 public class PostoController {
 
-    @Autowired
-    private PostoSevice postoSevice;
+
+    private final PostoSevice postoSevice;
 
     @PostMapping
     @Transactional

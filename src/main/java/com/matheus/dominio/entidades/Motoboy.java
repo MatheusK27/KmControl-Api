@@ -4,6 +4,7 @@ package com.matheus.dominio.entidades;
 import com.matheus.dominio.dtoEntrada.DadosAtualizarMotoboy;
 import com.matheus.dominio.dtoEntrada.DadosCadastroMotoboy;
 import jakarta.persistence.*;
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,12 @@ public class Motoboy {
 
     }
 
+    public void validarAtivo(){
+        if(!this.ativo){
+            throw new ValidationException("Motoboy inativo");
+        }
+    }
+
     public void atualizarMotoboy(DadosAtualizarMotoboy dados) {
         if (dados.nome()!=null) {
             this.nome= dados.nome();
@@ -61,5 +68,7 @@ public class Motoboy {
     public void desativarMotoboy() {
         this.ativo= false;
     }
+
+
 }
 

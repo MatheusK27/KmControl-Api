@@ -78,6 +78,14 @@ public class RegistroKm {
         }
     }
 
+    public void validarTotalKm(){
+        var totalKm= kmFim-kmEntrada;
+
+        if(totalKm >= 500){
+            throw new ValidationException("Total de km diario NÃO deve ser maior que 500");
+        }
+
+    }
 
     public void atualizarKm(DadosAtualizarRegistroKm dados) {
 

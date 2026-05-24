@@ -25,6 +25,16 @@ public class RegistroKmService {
     private final MotoboyRepositorio motoboyRepositorio;
 
     public DadosDetalhamentoRegistroKm cadastrarKmDiario(DadosCadastroRegistroKm dados){
+        var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
+        motoboy.validarAtivo();
+
+        if(repositorio.existsByMotoboyIdAndData(dados.motoboyId(), dados.data())){
+            throw new RuntimeException("Motoboy já possui registro nesta data");
+        }
+        if(repositorio.existsByMotoboyIdAndKmFimIsNull(dados.motoboyId())){
+            throw new ValidationException("Existe um km em aberto desse motoboy");
+        }
+
         var ultimoKm= repositorio.findTopByMotoboyIdOrderByKmFimDesc(dados.motoboyId());
         if(ultimoKm.isPresent()){
 
@@ -34,16 +44,9 @@ public class RegistroKmService {
                 throw  new ValidationException("Km de inicio não pode ser menor que Km anterior");
             }
         }
-        var motoboy= motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException("Motoboy não encontrado"));
-        if(!motoboy.getAtivo()){
-            throw new ValidationException("Não é permitido cadastro de km com motoboy inatico");
-        }
 
-
-        if(repositorio.existsByMotoboyIdAndData(dados.motoboyId(), dados.data())){
-              throw new RuntimeException("Motoboy já possui registro nesta data");
-        }
         var registroKm= new RegistroKm(dados, motoboy);
+        registroKm.validarTotalKm();
         repositorio.save(registroKm);
         return new DadosDetalhamentoRegistroKm(registroKm);
     }

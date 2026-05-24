@@ -22,6 +22,7 @@
     public class Abastecimento {
 
 
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
@@ -42,7 +43,6 @@
 
         private Integer  kmMomento;
 
-
         private BigDecimal litros;
 
         private BigDecimal valorLitro;
@@ -53,18 +53,18 @@
 
 
         public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy,Usuario usuario,  Posto posto ) {
-            validarAbastecimento(dados.litros());
+            validarAbastecimento();
             this.motoboy=motoboy;
             this.usuario=usuario;
             this.data= dados.data();
             this.posto= posto;
             this.kmMomento=dados.kmMomento();
-            this .litros = dados.litros();
+            this.litros = dados.litros();
             this.valorLitro=dados.valorLitro();
 
         }
 
-          private  void validarAbastecimento(BigDecimal litros){
+          private  void validarAbastecimento(){
 
             BigDecimal limiteMaximo=BigDecimal.valueOf(8);
 
@@ -75,7 +75,25 @@
                 throw new ValidationException("Litros deve ser maior que zero");
             }
 
+            if (!Objects.equals(getData(), LocalDate.now())){
+                throw  new ValidationException("Permito abastecimento somente data atual");
+
+            }
+
+            if (litros==null){
+                throw new ValidationException("Litragem não pode ser nula");
+            }
+
         }
+
+        public void validarKmAbastecimento(RegistroKm registroKm){
+            if(this.kmMomento < registroKm.getKmEntrada()){
+                throw new ValidationException("Km de abastecimento não pode ser menor que km de entrada");
+
+            }
+
+        }
+
 
         public void atualizarAbastecimento(DadosAtualizarAbastecimento dados){
             if (dados.data()!=null){

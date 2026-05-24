@@ -14,7 +14,6 @@ import java.util.Optional;
 
 public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     Page<Abastecimento> findByMotoboyId(Long motoboyId, Pageable pageable);
-    List<Abastecimento> findByDataBetween(LocalDate inicio, LocalDate fim);
     Page<Abastecimento> findByPostoId(Long postoId, Pageable pageable);
 
     @Query("""

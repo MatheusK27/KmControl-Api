@@ -55,7 +55,7 @@ public class    MotoboyServico {
     public DadosDetalhamentoMotoboy atualizarMotoboy(DadosAtualizarMotoboy dados,Long id) {
         var motoboy =repositorio.findById(id).orElseThrow(()-> new RuntimeException("Motoboy não encontrado"));
 
-        if(repositorio.existsByCnhAndIdNot(dados.cnh(),id)){
+        if(dados.cnh()!=null && repositorio.existsByCnhAndIdNot(dados.cnh(),id)){
             throw  new ValidationException("Já existe motoboy cadastrado com esse CNH");
         }
         motoboy.atualizarMotoboy(dados);

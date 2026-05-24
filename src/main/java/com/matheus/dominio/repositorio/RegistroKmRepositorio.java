@@ -4,6 +4,8 @@ import com.matheus.dominio.entidades.RegistroKm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,4 +19,29 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
 
     boolean existsByMotoboyIdAndKmFimIsNull(Long id);
     boolean existsByMotoboyIdAndData( Long MotoboyId, LocalDate data);
+    Optional<RegistroKm> findByMotoboyIdAndDataAndKmFimIsNull(Long motoboyId, LocalDate data);
+
+    @Query("""
+       SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+       FROM RegistroKm r
+       WHERE r.motoboy.id = :motoboyId
+       AND r.kmFim IS NULL
+       AND r.data <> :data
+       """)
+    boolean motoboyPossuiKmAbertoForaDaDataAtual(
+            @Param("motoboyId") Long motoboyId,
+            @Param("data") LocalDate data
+    );
+
+    @Query("""
+       SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
+       FROM RegistroKm r
+       WHERE r.motoboy.id = :motoboyId
+       AND r.data = :data
+       AND r.kmFim IS NULL
+       """)
+    boolean existeKmAbertoNaDataAtual(
+            @Param("motoboyId") Long motoboyId,
+            @Param("data") LocalDate data
+    );
 }

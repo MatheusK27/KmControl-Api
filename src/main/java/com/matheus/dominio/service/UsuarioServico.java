@@ -4,14 +4,15 @@ import com.matheus.dominio.dtoEntrada.DadosCadastroUsuario;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoUsuario;
 import com.matheus.dominio.entidades.Usuario;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioServico {
 
-    @Autowired
-    private UsuarioRepositorio repositorio;
+    private final UsuarioRepositorio repositorio;
 
 
     public DadosDetalhamentoUsuario cadastrarUsuario(DadosCadastroUsuario dados){

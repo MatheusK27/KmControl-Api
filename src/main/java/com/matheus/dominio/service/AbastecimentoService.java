@@ -12,6 +12,7 @@ import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.PostoRepositorio;
 import com.matheus.dominio.repositorio.UsuarioRepositorio;
 import jakarta.validation.ValidationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,43 +22,26 @@ import java.math.BigDecimal;
 
 
 @Service
+@RequiredArgsConstructor
 public class AbastecimentoService {
 
-    @Autowired
-    private AbastecimentoRepositorio repositorio;
+    private final AbastecimentoRepositorio repositorio;
 
-    @Autowired
-    private MotoboyRepositorio motoboyRepositorio;
 
-    @Autowired
-    private UsuarioRepositorio usuarioRepositorio;
+    private final MotoboyRepositorio motoboyRepositorio;
 
-    @Autowired
-    private PostoRepositorio postoRepositorio;
+    private final UsuarioRepositorio usuarioRepositorio;
+
+
+    private final PostoRepositorio postoRepositorio;
 
 
     public DadosDetalhamentoAbastecimento cadastroAbastecimento(DadosCadastroAbastecimento dados) {
-
-        BigDecimal limiteMaximo=BigDecimal.valueOf(8);
-
-        if(dados.litros().compareTo(limiteMaximo)>0){
-            throw new ValidationException("Limite de abastecimento excedido, permitido somente 8 litros de combustivél ");
-        }
-
-        if(dados.litros().compareTo(BigDecimal.ZERO)<=0){
-            throw  new ValidationException("Litros deve ser maior que zero");
-        }
-
-
         var ultimoAbastec = repositorio.findTopByMotoboyIdOrderByKmMomentoDesc(dados.motoboyId());
-
         if(ultimoAbastec.isPresent()){
-
             var ultimoKm = ultimoAbastec.get().getKmMomento();
-
             if(dados.kmMomento()<ultimoKm){
                  throw new ValidationException("KM não pode ser menor que o último abastecimento registrado ");
-
             }
         }
 
@@ -91,15 +75,13 @@ public class AbastecimentoService {
     }
 
     public Page<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long id, Pageable pagina) {
-        var lista= repositorio.findByMotoboyId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
-        return lista;
+        return repositorio.findByMotoboyId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
 
     }
 
 
     public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPostoId(Long id,  Pageable pagina) {
-        var lista= repositorio.findByPostoId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
-        return lista;
+        return repositorio.findByPostoId(id,pagina).map(DadosDetalhamentoAbastecimento::new);
     }
     public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPorMes(int mes, Pageable pagina) {
         var lista= repositorio.buscarPorMes(mes,pagina).map(DadosDetalhamentoAbastecimento::new);

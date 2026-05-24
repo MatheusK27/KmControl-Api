@@ -7,28 +7,30 @@ import com.matheus.dominio.entidades.RegistroKm;
 import com.matheus.dominio.repositorio.MotoboyRepositorio;
 import com.matheus.dominio.repositorio.RegistroKmRepositorio;
 import jakarta.validation.ValidationException;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
+@RequiredArgsConstructor
 public class RegistroKmService {
 
-    @Autowired
-    private RegistroKmRepositorio repositorio;
-    @Autowired
-    private MotoboyRepositorio motoboyRepositorio;
+    private final RegistroKmRepositorio repositorio;
+
+    private final MotoboyRepositorio motoboyRepositorio;
 
     public DadosDetalhamentoRegistroKm cadastrarKmDiario(DadosCadastroRegistroKm dados){
-        if (dados.kmRetornoAlmoco()<dados.kmSaidaAlmoco() || dados.kmFim()< dados.kmInicio()){
-            throw  new ValidationException("Km retorno almoco ou saida incorretos");
-        }
-
         var ultimoKm= repositorio.findTopByMotoboyIdOrderByKmFimDesc(dados.motoboyId());
         if(ultimoKm.isPresent()){
 
             var kmFinal=  ultimoKm.get().getKmFim();
 
-            if(dados.kmInicio() < kmFinal){
+            if(dados.kmEntrada() < kmFinal){
                 throw  new ValidationException("Km de inicio não pode ser menor que Km anterior");
             }
         }
@@ -36,10 +38,30 @@ public class RegistroKmService {
         if(!motoboy.getAtivo()){
             throw new ValidationException("Não é permitido cadastro de km com motoboy inatico");
         }
+
+
+        if(repositorio.existsByMotoboyIdAndData(dados.motoboyId(), dados.data())){
+              throw new RuntimeException("Motoboy já possui registro nesta data");
+        }
         var registroKm= new RegistroKm(dados, motoboy);
         repositorio.save(registroKm);
         return new DadosDetalhamentoRegistroKm(registroKm);
     }
+
+    public Page<DadosDetalhamentoRegistroKm> buscarRegistroKmPorMotoboyId(Long motoboyId, Pageable pagina){
+        if(!motoboyRepositorio.existsById(motoboyId)){
+            throw new ValidationException("Motoboy não encontrado");
+        }
+        return repositorio.findByMotoboyId(motoboyId, pagina).map(DadosDetalhamentoRegistroKm::new);
+    }
+
+    public DadosDetalhamentoRegistroKm buscarRegistroKmPorMotoboyIdEData(Long motoboyId, LocalDate data){
+        var busca= repositorio.findByMotoboyIdAndData(motoboyId,data).orElseThrow(()-> new ValidationException(
+                                                                                        "Não foi encontrado por id Motoboy ou data"
+        ));
+        return new DadosDetalhamentoRegistroKm(busca);
+    }
+
 
     public DadosDetalhamentoRegistroKm atualizarKm (DadosAtualizarRegistroKm dados){
         var km= repositorio.findById(dados.id()).orElseThrow(() -> new RuntimeException("Registro KM não encontrado"));

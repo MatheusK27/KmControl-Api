@@ -18,10 +18,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MotoboyServico {
+public class    MotoboyServico {
 
     private final MotoboyRepositorio repositorio;
-    
+
     private final RegistroKmRepositorio registroKmRepositorio;
 
 

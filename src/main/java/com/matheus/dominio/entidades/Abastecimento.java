@@ -4,6 +4,7 @@
     import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
     import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
     import jakarta.persistence.*;
+    import jakarta.validation.ValidationException;
     import lombok.AllArgsConstructor;
     import lombok.Data;
     import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@
     import java.math.BigDecimal;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
+    import java.util.Objects;
 
     @Data
     @AllArgsConstructor
@@ -51,6 +53,7 @@
 
 
         public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy,Usuario usuario,  Posto posto ) {
+            validarAbastecimento(dados.litros());
             this.motoboy=motoboy;
             this.usuario=usuario;
             this.data= dados.data();
@@ -58,6 +61,19 @@
             this.kmMomento=dados.kmMomento();
             this .litros = dados.litros();
             this.valorLitro=dados.valorLitro();
+
+        }
+
+          private  void validarAbastecimento(BigDecimal litros){
+
+            BigDecimal limiteMaximo=BigDecimal.valueOf(8);
+
+            if(litros.compareTo(limiteMaximo)>0){
+                throw new ValidationException("Limite de abastecimento excedido, permitido somente 8 litros de combustivél ");
+            }
+            if(litros.compareTo(BigDecimal.ZERO)<=0){
+                throw new ValidationException("Litros deve ser maior que zero");
+            }
 
         }
 

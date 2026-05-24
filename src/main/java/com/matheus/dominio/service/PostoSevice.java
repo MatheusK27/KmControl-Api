@@ -8,18 +8,20 @@ import com.matheus.dominio.dtoSaida.DadosDetalhamentoUsuario;
 import com.matheus.dominio.entidades.Posto;
 import com.matheus.dominio.repositorio.AbastecimentoRepositorio;
 import com.matheus.dominio.repositorio.PostoRepositorio;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostoSevice {
 
-    @Autowired
-    private PostoRepositorio repositorio;
-    @Autowired
-    private AbastecimentoRepositorio abastecimentoRepositorio;
+
+    private final PostoRepositorio repositorio;
+
+    private final AbastecimentoRepositorio abastecimentoRepositorio;
 
 
 

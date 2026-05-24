@@ -4,6 +4,7 @@ package com.matheus.dominio.entidades;
 import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
 import jakarta.persistence.*;
+import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,13 +44,38 @@ public class RegistroKm {
     private LocalDateTime criadoEm= LocalDateTime.now();
 
     public RegistroKm (DadosCadastroRegistroKm dados,Motoboy motoboy){
+        validarKmEntrada(dados.kmEntrada());
+        validarKmSaidaAlmoco(dados.kmSaidaAlmoco(),dados.kmEntrada());
+        validarKmRetornoAlmoco(dados.kmRetornoAlmoco(),dados.kmSaidaAlmoco());
+        validarKmFim(dados.kmFim(),dados.kmRetornoAlmoco());
         this.motoboy=motoboy;
         this.data= dados.data();
-        this.kmEntrada=dados.kmInicio();
+        this.kmEntrada=dados.kmEntrada();
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
         this.kmFim=dados.kmFim();
 
+    }
+
+    private void validarKmEntrada(Integer kmEntrada){
+        if (kmEntrada== null || kmEntrada<=0){
+            throw  new ValidationException("Km entrada fornecido errado");
+        }
+    }
+    private void validarKmSaidaAlmoco(Integer kmSaidaAlmoco, Integer kmEntrada){
+        if(kmSaidaAlmoco==null || kmSaidaAlmoco<=0 || kmSaidaAlmoco < kmEntrada){
+            throw new ValidationException("Km saída do almoço fornecido errado");
+        }
+    }
+    private void validarKmRetornoAlmoco(Integer kmRetorno, Integer kmSaidaAlmoco){
+        if(kmRetorno==null || kmRetorno<=0 ||  kmRetorno<kmSaidaAlmoco){
+            throw new ValidationException("Km retorno almoço fornecido errado");
+        }
+    }
+    private void validarKmFim(Integer kmFim, Integer kmRetornoAlmoco){
+        if (kmFim == null || kmFim<=0 || kmFim<kmRetornoAlmoco){
+            throw new ValidationException("Km fim fornecido errado");
+        }
     }
 
 

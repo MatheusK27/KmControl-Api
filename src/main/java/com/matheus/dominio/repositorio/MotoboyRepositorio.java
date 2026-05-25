@@ -20,4 +20,6 @@ public interface MotoboyRepositorio extends JpaRepository<Motoboy, Long> {
     boolean existsByCnh(String cnh);
 
     boolean existsByCnhAndIdNot(String cnh,Long id);
+
+    boolean existsByPlacaAndIdNot(String placa,Long id);
 }

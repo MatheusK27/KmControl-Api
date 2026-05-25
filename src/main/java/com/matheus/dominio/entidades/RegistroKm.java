@@ -103,6 +103,36 @@ public class RegistroKm {
         if(dados.kmFim()!=null){
             this.kmFim=dados.kmFim();
         }
-
+        validarRegistroCompleto();
     }
+
+    private void validarRegistroCompleto() {
+
+        if (kmEntrada == null) {
+            throw new ValidationException("KM de entrada é obrigatório");
+        }
+
+        if (kmSaidaAlmoco != null && kmSaidaAlmoco < kmEntrada) {
+            throw new ValidationException("KM de saída para almoço não pode ser menor que KM de entrada");
+        }
+
+        if (kmRetornoAlmoco != null && kmSaidaAlmoco == null) {
+            throw new ValidationException("KM de retorno do almoço exige KM de saída para almoço");
+        }
+
+        if (kmRetornoAlmoco != null && kmRetornoAlmoco < kmSaidaAlmoco) {
+            throw new ValidationException("KM de retorno do almoço não pode ser menor que KM de saída para almoço");
+        }
+
+        if (kmFim != null) {
+            Integer kmAnterior = kmRetornoAlmoco != null ? kmRetornoAlmoco : kmEntrada;
+
+            if (kmFim < kmAnterior) {
+                throw new ValidationException("KM final não pode ser menor que o KM anterior");
+            }
+        }
+    }
+
+
+
 }

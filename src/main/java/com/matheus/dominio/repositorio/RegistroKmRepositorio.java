@@ -44,4 +44,17 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
             @Param("motoboyId") Long motoboyId,
             @Param("data") LocalDate data
     );
+
+    @Query("""
+       SELECT r.kmFim
+       FROM RegistroKm r
+       WHERE r.motoboy.id = :motoboyId
+       AND r.data < :data
+       AND r.kmFim IS NOT NULL
+       ORDER BY r.data DESC, r.id DESC
+       """)
+    Optional<Integer> buscarUltimoKmFimAnterior(
+            @Param("motoboyId") Long motoboyId,
+            @Param("data") LocalDate data
+    );
 }

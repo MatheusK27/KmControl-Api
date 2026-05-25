@@ -81,7 +81,12 @@
             }
 
             if (litros==null){
-                throw new ValidationException("Litragem não pode ser nula");
+                throw new ValidationException("Litragem não pode ser nulo");
+            }
+
+            if (valorLitro.compareTo(BigDecimal.ZERO)<=0){
+                throw new RuntimeException("Valor litro inserio errado");
+
             }
 
         }
@@ -89,13 +94,16 @@
         public void validarKmAbastecimento(RegistroKm registroKm){
             if(this.kmMomento < registroKm.getKmEntrada()){
                 throw new ValidationException("Km de abastecimento não pode ser menor que km de entrada");
+            }
 
+            if(!Objects.equals(data, LocalDate.now())){
+                throw new ValidationException("Data não pode ser retroativa");
             }
 
         }
 
 
-        public void atualizarAbastecimento(DadosAtualizarAbastecimento dados){
+        public void atualizarAbastecimento(DadosAtualizarAbastecimento dados) {
             if (dados.data()!=null){
                 this.data=dados.data();
             }
@@ -110,6 +118,9 @@
             }
 
         }
+
+
+
 
         public BigDecimal calculoCombustivel() {
              return getValorLitro().multiply(getLitros());

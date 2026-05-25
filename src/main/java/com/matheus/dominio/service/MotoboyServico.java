@@ -58,6 +58,10 @@ public class    MotoboyServico {
         if(dados.cnh()!=null && repositorio.existsByCnhAndIdNot(dados.cnh(),id)){
             throw  new ValidationException("Já existe motoboy cadastrado com esse CNH");
         }
+
+        if(dados.placa()!=null && repositorio.existsByPlacaAndIdNot(dados.placa(),id)){
+            throw new ValidationException("J existe motoboy com esse placa");
+        }
         motoboy.atualizarMotoboy(dados);
         return new DadosDetalhamentoMotoboy(motoboy);
     }

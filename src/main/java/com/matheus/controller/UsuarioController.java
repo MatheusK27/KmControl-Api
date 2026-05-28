@@ -24,7 +24,6 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DadosDetalhamentoUsuario> cadastroUsuario(@RequestBody @Valid DadosCadastroUsuario dados) {
         var usuario= servico.cadastrarUsuario(dados);
         return  ResponseEntity.status(HttpStatus.CREATED).body(usuario);

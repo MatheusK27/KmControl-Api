@@ -11,6 +11,7 @@ import com.matheus.dominio.entidades.Abastecimento;
 
 
 import com.matheus.dominio.repositorio.*;
+import com.matheus.infra.RegraDeNegocioException;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 
@@ -35,69 +36,50 @@ public class AbastecimentoService {
 
     public DadosDetalhamentoAbastecimento cadastroAbastecimento(DadosCadastroAbastecimento dados) {
 
-        var motoboy = motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RuntimeException(
+        var motoboy = motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RegraDeNegocioException(
                 "Motoboy não encontrado"));
-
-        motoboy.validarAtivo();
-
-        var usuario = usuarioRepositorio.findById(dados.usuarioId()).orElseThrow(() -> new RuntimeException(
+        var usuario = usuarioRepositorio.findById(dados.usuarioId()).orElseThrow(() -> new RegraDeNegocioException(
                 "Usuario não encontrado"));
-
-        var posto = postoRepositorio.findById(dados.postoId()).orElseThrow(() -> new RuntimeException(
+        var posto = postoRepositorio.findById(dados.postoId()).orElseThrow(() -> new RegraDeNegocioException(
                 "Posto não encontrado"));
-
-        posto.validarAtivo();
-
-        var registroKm = registroKmRepositorio.findByMotoboyIdAndDataAndKmFimIsNull(dados.motoboyId(), dados.data()).orElseThrow(() -> new ValidationException(
+        var registroKm = registroKmRepositorio.findByMotoboyIdAndDataAndKmFimIsNull(dados.motoboyId(), dados.data()).orElseThrow(() -> new RegraDeNegocioException(
                 "Não existe KM aberto para esse motoboy"));
 
-
-        var ultimoAbastec = repositorio.findTopByMotoboyIdOrderByKmMomentoDesc(dados.motoboyId());
-
-        if (ultimoAbastec.isPresent()) {
-            var ultimoKm = ultimoAbastec.get().getKmMomento();
-            if (dados.kmMomento() < ultimoKm) {
-                throw new ValidationException("KM não pode ser menor que o último abastecimento registrado ");
-            }
-
-            var autonomia=ultimoAbastec.get().getLitros().multiply(BigDecimal.valueOf(30));
-            var ultimokmAbastecido= ultimoAbastec.get().getKmMomento() + autonomia.intValue()-10;
-            if(dados.kmMomento()<ultimokmAbastecido){
-                throw new ValidationException("Abastecimento só permitido próximo ao fim da autonomia");
-
-            }
-        }
+        motoboy.validarAtivo();
+        posto.validarAtivo();
+        validarUlrimoAbastecmento(dados);
         var abastecimento = new Abastecimento(dados, motoboy, usuario, posto);
-
         abastecimento.validarKmAbastecimento(registroKm);
-
         repositorio.save(abastecimento);
-
         return new DadosDetalhamentoAbastecimento(abastecimento);
     }
 
+
+
     public DadosDetalhamentoAbastecimento atualizarAbastecimento(DadosAtualizarAbastecimento dados, Long id) {
-        var abastecimento = repositorio.findById(id).orElseThrow(() -> new RuntimeException("ID abastecimento não encontrado"));
-        var registroKm= registroKmRepositorio.buscarUltimoKmFimAnterior(dados.motoboyId(), dados.data());
-        if(registroKm.isPresent() && dados.kmMomento()< registroKm.get()) {
-            throw new ValidationException("KM do abastecimento não pode ser menor que o último KM final anterior");
-
+        var abastecimento = repositorio.findById(id).orElseThrow(() -> new RegraDeNegocioException("ID abastecimento não encontrado"));
+        var registroKm = registroKmRepositorio.buscarUltimoKmFimAnterior(dados.motoboyId(), dados.data());
+        if (registroKm.isPresent() && dados.kmMomento() < registroKm.get()) {
+            throw new RegraDeNegocioException("KM do abastecimento não pode ser menor que o último KM final anterior");
         }
-        var registro= registroKmRepositorio.findById(id).orElseThrow(() -> new ValidationException("id não encontrado"));
-
+        var registro = registroKmRepositorio.findById(id).orElseThrow(() -> new RegraDeNegocioException("id não encontrado"));
         abastecimento.validarKmAbastecimento(registro);
         abastecimento.atualizarAbastecimento(dados);
         return new DadosDetalhamentoAbastecimento(abastecimento);
     }
 
+
+
+
     public void excluirAbastecimento(Long id) {
-        var abastecimento = repositorio.findById(id).orElseThrow(() -> new RuntimeException("Abastecimento não encontrado"));
+        var abastecimento = repositorio.findById(id).orElseThrow(() -> new RegraDeNegocioException("Abastecimento não encontrado"));
         repositorio.delete(abastecimento);
 
     }
 
-    public Page<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long id, Pageable pagina) {
-        return repositorio.findByMotoboyId(id, pagina).map(DadosDetalhamentoAbastecimento::new);
+
+    public Page<DadosDetalhamentoAbastecimento> buscarAbastecimentosPorMotoboyId(Long motoboyId, Pageable pagina) {
+        return repositorio.findByMotoboyId(motoboyId, pagina).map(DadosDetalhamentoAbastecimento::new);
 
     }
 
@@ -106,9 +88,29 @@ public class AbastecimentoService {
         return repositorio.findByPostoId(id, pagina).map(DadosDetalhamentoAbastecimento::new);
     }
 
+    
+
     public Page<DadosDetalhamentoAbastecimento> detalharAbastecimentosPorMes(int mes, Pageable pagina) {
         return repositorio.buscarPorMes(mes, pagina).map(DadosDetalhamentoAbastecimento::new);
 
+
+    }
+
+    private void validarUlrimoAbastecmento(DadosCadastroAbastecimento dados) {
+        var ultimoAbastec = repositorio.findTopByMotoboyIdOrderByKmMomentoDesc(dados.motoboyId());
+        if (ultimoAbastec.isPresent()) {
+            var ultimoKm = ultimoAbastec.get().getKmMomento();
+            if (dados.kmMomento() < ultimoKm) {
+                throw new RegraDeNegocioException("KM não pode ser menor que o último abastecimento registrado ");
+            }
+
+            var autonomia = ultimoAbastec.get().getLitros().multiply(BigDecimal.valueOf(30));
+            var ultimokmAbastecido = ultimoAbastec.get().getKmMomento() + autonomia.intValue() - 10;
+            if (dados.kmMomento() < ultimokmAbastecido) {
+                throw new RegraDeNegocioException("Abastecimento só permitido próximo ao fim da autonomia");
+
+            }
+        }
 
     }
 }

@@ -62,12 +62,6 @@ public class RegistroKm {
 
     }
 
-   /* private void validarData(LocalDate data) {
-        if (!Objects.equals(data, LocalDate.now())){
-            throw new ValidationException("Data invalida");
-        }
-    }*/
-
     private void validarKmEntrada(Integer kmEntrada,LocalDate data) {
         if (kmEntrada == null || kmEntrada <= 0) {
             throw new ValidationException("Km entrada não fornecido ou menor que zero");
@@ -76,7 +70,6 @@ public class RegistroKm {
             throw new ValidationException("Permitido somente data atual!");
         }
     }
-
 
     public void atualizarKm(DadosAtualizarRegistroKm dados) {
 

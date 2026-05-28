@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     Page<Abastecimento> findByMotoboyId(Long motoboyId, Pageable pageable);
     Page<Abastecimento> findByPostoId(Long postoId, Pageable pageable);
-    boolean existsByMotoboyIdAndData(Long motoboyId,  LocalDate data);
+
 
     @Query("""
             SELECT a FROM Abastecimento a 

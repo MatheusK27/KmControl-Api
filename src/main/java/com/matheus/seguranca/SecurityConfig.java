@@ -1,8 +1,9 @@
 package com.matheus.seguranca;
 
 
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.matheus.infra.TratadorErro403;
+import com.matheus.infra.TratadorErro401;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,9 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private SecurityFilter securityFilter;
+
+    private final SecurityFilter securityFilter;
+    private final TratadorErro401 tratadorErro401;
+    private final TratadorErro403 tratadorErro403;
+
 
     @Bean
     public SecurityFilterChain filtroSeguranca(HttpSecurity http) throws Exception {
@@ -33,8 +38,11 @@ public class SecurityConfig {
                               .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
                               .requestMatchers(HttpMethod.POST, "/login").permitAll()
                               .anyRequest().authenticated())
+                      .exceptionHandling(ex-> ex.authenticationEntryPoint(tratadorErro401)
+                              .accessDeniedHandler(tratadorErro403))
                       .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                       .build();
+
     }
 
     @Bean

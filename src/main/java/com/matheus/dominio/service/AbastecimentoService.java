@@ -3,8 +3,10 @@ package com.matheus.dominio.service;
 
 import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
+import com.matheus.dominio.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.entidades.Abastecimento;
 
 
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -43,18 +46,11 @@ public class AbastecimentoService {
         var posto = postoRepositorio.findById(dados.postoId()).orElseThrow(() -> new RuntimeException(
                 "Posto não encontrado"));
 
-        if (registroKmRepositorio.motoboyPossuiKmAbertoForaDaDataAtual(dados.motoboyId(), LocalDate.now())) {
-            throw new ValidationException(
-                    "Impossivél cadastrar abastecimento com Km final dia anterior em aberto");
-        }
-
-        if (!registroKmRepositorio.existeKmAbertoNaDataAtual(dados.motoboyId(), LocalDate.now())) {
-            throw new ValidationException(
-                    "Motoboy precisa ter KM aberto na data atual para abastecer");
-        }
+        posto.validarAtivo();
 
         var registroKm = registroKmRepositorio.findByMotoboyIdAndDataAndKmFimIsNull(dados.motoboyId(), dados.data()).orElseThrow(() -> new ValidationException(
                 "Não existe KM aberto para esse motoboy"));
+
 
         var ultimoAbastec = repositorio.findTopByMotoboyIdOrderByKmMomentoDesc(dados.motoboyId());
 
@@ -63,10 +59,14 @@ public class AbastecimentoService {
             if (dados.kmMomento() < ultimoKm) {
                 throw new ValidationException("KM não pode ser menor que o último abastecimento registrado ");
             }
+
+            var autonomia=ultimoAbastec.get().getLitros().multiply(BigDecimal.valueOf(30));
+            var ultimokmAbastecido= ultimoAbastec.get().getKmMomento() + autonomia.intValue()-10;
+            if(dados.kmMomento()<ultimokmAbastecido){
+                throw new ValidationException("Abastecimento só permitido próximo ao fim da autonomia");
+
+            }
         }
-
-        posto.validarAtivo();
-
         var abastecimento = new Abastecimento(dados, motoboy, usuario, posto);
 
         abastecimento.validarKmAbastecimento(registroKm);
@@ -78,13 +78,14 @@ public class AbastecimentoService {
 
     public DadosDetalhamentoAbastecimento atualizarAbastecimento(DadosAtualizarAbastecimento dados, Long id) {
         var abastecimento = repositorio.findById(id).orElseThrow(() -> new RuntimeException("ID abastecimento não encontrado"));
-
         var registroKm= registroKmRepositorio.buscarUltimoKmFimAnterior(dados.motoboyId(), dados.data());
         if(registroKm.isPresent() && dados.kmMomento()< registroKm.get()) {
             throw new ValidationException("KM do abastecimento não pode ser menor que o último KM final anterior");
 
         }
+        var registro= registroKmRepositorio.findById(id).orElseThrow(() -> new ValidationException("id não encontrado"));
 
+        abastecimento.validarKmAbastecimento(registro);
         abastecimento.atualizarAbastecimento(dados);
         return new DadosDetalhamentoAbastecimento(abastecimento);
     }
@@ -110,6 +111,4 @@ public class AbastecimentoService {
 
 
     }
-
-
 }

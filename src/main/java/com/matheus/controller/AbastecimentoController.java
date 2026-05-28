@@ -3,8 +3,10 @@ package com.matheus.controller;
 import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
 
+import com.matheus.dominio.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoPosto;
+import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.service.AbastecimentoService;
 import com.matheus.dominio.service.PostoSevice;
 import jakarta.transaction.Transactional;
@@ -45,6 +47,8 @@ public class AbastecimentoController {
         var abastecimento = service.atualizarAbastecimento(dados,id);
         return ResponseEntity.ok().body(abastecimento);
     }
+
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity excluirAbastecimento(@PathVariable Long id){

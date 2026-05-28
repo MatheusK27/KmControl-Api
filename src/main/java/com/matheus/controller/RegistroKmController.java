@@ -3,6 +3,7 @@ package com.matheus.controller;
 import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
 import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
+import com.matheus.dominio.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.dominio.service.RegistroKmService;
@@ -32,6 +33,13 @@ public class RegistroKmController {
 
         var cadastro= servico.cadastrarKmDiario(dados);
         return ResponseEntity.status(HttpStatus.CREATED).body(cadastro);
+    }
+
+    @PutMapping("/finalizar/{id}")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoRegistroKm> finalizarCadastroRegistroKm(@RequestBody @Valid DadosFinalizarCadastroRegistroKM dados, @PathVariable Long id){
+        var registro= servico.finalizarCadastroRegistroKm(dados,id);
+        return ResponseEntity.ok().body(registro);
     }
 
     @GetMapping("/motoboy/{id}")

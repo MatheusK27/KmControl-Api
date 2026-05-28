@@ -53,7 +53,6 @@
 
 
         public Abastecimento(DadosCadastroAbastecimento dados, Motoboy motoboy,Usuario usuario,  Posto posto ) {
-            validarAbastecimento();
             this.motoboy=motoboy;
             this.usuario=usuario;
             this.data= dados.data();
@@ -61,6 +60,7 @@
             this.kmMomento=dados.kmMomento();
             this.litros = dados.litros();
             this.valorLitro=dados.valorLitro();
+            validarAbastecimento();
 
         }
 
@@ -80,11 +80,7 @@
 
             }
 
-            if (litros==null){
-                throw new ValidationException("Litragem não pode ser nulo");
-            }
-
-            if (valorLitro.compareTo(BigDecimal.ZERO)<=0){
+              if (valorLitro.compareTo(BigDecimal.ZERO)<=0){
                 throw new RuntimeException("Valor litro inserio errado");
 
             }
@@ -95,15 +91,14 @@
             if(this.kmMomento < registroKm.getKmEntrada()){
                 throw new ValidationException("Km de abastecimento não pode ser menor que km de entrada");
             }
-
-            if(!Objects.equals(data, LocalDate.now())){
-                throw new ValidationException("Data não pode ser retroativa");
+            if(registroKm.getKmFim()!=null && this.kmMomento > registroKm.getKmFim()){
+                throw new ValidationException("Km de abastecimento não pode ser maior que km final");
             }
 
         }
 
 
-        public void atualizarAbastecimento(DadosAtualizarAbastecimento dados) {
+        public void atualizarAbastecimento(DadosAtualizarAbastecimento dados){
             if (dados.data()!=null){
                 this.data=dados.data();
             }
@@ -119,12 +114,10 @@
 
         }
 
-
-
-
         public BigDecimal calculoCombustivel() {
              return getValorLitro().multiply(getLitros());
         }
+
 
     }
 

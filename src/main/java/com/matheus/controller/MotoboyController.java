@@ -27,7 +27,6 @@ import java.util.List;
         private final MotoboyServico servico;
 
         @PostMapping
-        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<DadosDetalhamentoMotoboy> cadastrarMotoboy(@RequestBody @Valid DadosCadastroMotoboy dados){
             var motoboy= servico.cadastrarMotoboy(dados);
             return ResponseEntity.status(HttpStatus.CREATED).body(motoboy);

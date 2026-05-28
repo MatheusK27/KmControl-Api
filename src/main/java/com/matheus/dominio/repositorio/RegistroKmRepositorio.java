@@ -1,25 +1,25 @@
 package com.matheus.dominio.repositorio;
 
 import com.matheus.dominio.entidades.RegistroKm;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.time.LocalDate;
-import java.util.List;
+
 import java.util.Optional;
 
 public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
     Page<RegistroKm> findByMotoboyId(Long motoboyId, Pageable pageable);
-    Page<RegistroKm> findByData(LocalDate data, Pageable pageable);
-    Optional<RegistroKm> findByMotoboyIdAndData(Long id, LocalDate data);
+    Optional<RegistroKm> findByMotoboyIdAndData(Long motoboyId, LocalDate data);
     Optional<RegistroKm> findTopByMotoboyIdOrderByKmFimDesc(Long MotoboyId);
 
     boolean existsByMotoboyIdAndKmFimIsNull(Long id);
     boolean existsByMotoboyIdAndData( Long MotoboyId, LocalDate data);
     Optional<RegistroKm> findByMotoboyIdAndDataAndKmFimIsNull(Long motoboyId, LocalDate data);
+
 
     @Query("""
        SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
@@ -57,4 +57,8 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
             @Param("motoboyId") Long motoboyId,
             @Param("data") LocalDate data
     );
+
+
+    Optional<RegistroKm> findByMotoboyIdAndKmEntradaIsNotNull(Long motoboyId);
+
 }

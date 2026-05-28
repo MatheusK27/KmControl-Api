@@ -15,14 +15,14 @@ import java.util.Optional;
 public interface AbastecimentoRepositorio extends JpaRepository<Abastecimento, Long> {
     Page<Abastecimento> findByMotoboyId(Long motoboyId, Pageable pageable);
     Page<Abastecimento> findByPostoId(Long postoId, Pageable pageable);
+    boolean existsByMotoboyIdAndData(Long motoboyId,  LocalDate data);
 
     @Query("""
             SELECT a FROM Abastecimento a 
             WHERE MONTH(a.criadoEm) = :mes
 """)
     Page<Abastecimento> buscarPorMes(@Param("mes") int mes,Pageable pageable);
-
-    Optional<Abastecimento> findTopByMotoboyIdOrderByKmMomentoDesc(Long id);
+    Optional<Abastecimento> findTopByMotoboyIdOrderByKmMomentoDesc(Long motoboyId);
 
 
 

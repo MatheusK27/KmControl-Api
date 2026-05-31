@@ -1,26 +1,20 @@
 package com.matheus.controller;
 
-import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
-import com.matheus.dominio.dtoEntrada.DadosCadastroAbastecimento;
+import com.matheus.entidades.dtoEntrada.DadosAtualizarAbastecimento;
+import com.matheus.entidades.dtoEntrada.DadosCadastroAbastecimento;
 
-import com.matheus.dominio.dtoEntrada.DadosFinalizarCadastroRegistroKM;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoPosto;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
-import com.matheus.dominio.service.AbastecimentoService;
-import com.matheus.dominio.service.PostoSevice;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoAbastecimento;
+import com.matheus.servico.AbastecimentoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 

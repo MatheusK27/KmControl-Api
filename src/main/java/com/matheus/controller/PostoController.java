@@ -1,20 +1,16 @@
 package com.matheus.controller;
 
 
-import com.matheus.dominio.dtoEntrada.DadosCadastroPosto;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoPosto;
-import com.matheus.dominio.service.PostoSevice;
+import com.matheus.entidades.dtoEntrada.DadosCadastroPosto;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoPosto;
+import com.matheus.servico.PostoSevice;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/posto")

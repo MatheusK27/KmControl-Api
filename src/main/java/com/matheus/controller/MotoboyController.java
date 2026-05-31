@@ -1,14 +1,12 @@
 package com.matheus.controller;
 
 
-import com.matheus.dominio.dtoEntrada.DadosAtualizarMotoboy;
-import com.matheus.dominio.dtoEntrada.DadosCadastroMotoboy;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoAbastecimento;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
-import com.matheus.dominio.service.MotoboyServico;
+import com.matheus.entidades.dtoEntrada.DadosAtualizarMotoboy;
+import com.matheus.entidades.dtoEntrada.DadosCadastroMotoboy;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoMotoboy;
+import com.matheus.servico.MotoboyServico;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,9 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-    @RestController
+@RestController
     @RequestMapping("/motoboys")
     @RequiredArgsConstructor
     public class MotoboyController {

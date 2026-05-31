@@ -1,14 +1,11 @@
 package com.matheus.seguranca;
 
-import com.matheus.dominio.repositorio.UsuarioRepositorio;
-import com.matheus.infra.TratadorErro401;
-import com.matheus.infra.TratadorErro403;
+import com.matheus.entidades.repositorio.UsuarioRepositorio;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

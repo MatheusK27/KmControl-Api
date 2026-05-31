@@ -1,16 +1,13 @@
 package com.matheus.controller;
 
-import com.matheus.dominio.dtoEntrada.DadosAtualizarAbastecimento;
-import com.matheus.dominio.dtoEntrada.DadosAtualizarRegistroKm;
-import com.matheus.dominio.dtoEntrada.DadosCadastroRegistroKm;
-import com.matheus.dominio.dtoEntrada.DadosFinalizarCadastroRegistroKM;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoMotoboy;
-import com.matheus.dominio.dtoSaida.DadosDetalhamentoRegistroKm;
-import com.matheus.dominio.service.RegistroKmService;
+import com.matheus.entidades.dtoEntrada.DadosAtualizarRegistroKm;
+import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
+import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoRegistroKm;
+import com.matheus.servico.RegistroKmService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

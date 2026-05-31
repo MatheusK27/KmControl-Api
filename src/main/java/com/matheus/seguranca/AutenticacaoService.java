@@ -1,6 +1,6 @@
 package com.matheus.seguranca;
 
-import com.matheus.dominio.repositorio.UsuarioRepositorio;
+import com.matheus.entidades.repositorio.UsuarioRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

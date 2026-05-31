@@ -1,12 +1,11 @@
 package com.matheus.controller;
 
 
-import com.matheus.dominio.dtoEntrada.DadosLogin;
-import com.matheus.dominio.entidades.Usuario;
+import com.matheus.entidades.dtoEntrada.DadosLogin;
+import com.matheus.entidades.entidades.Usuario;
 import com.matheus.seguranca.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

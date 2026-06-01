@@ -37,6 +37,9 @@ public class SecurityConfig {
                       .authorizeHttpRequests(auth->auth
                               .requestMatchers(HttpMethod.POST, "/usuario").permitAll()
                               .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                              .requestMatchers("/swagger-ui/**",
+                                      "/v3/api-docs/**",
+                                      "/swagger-ui.html").permitAll()
                               .anyRequest().authenticated())
                       .exceptionHandling(ex-> ex.authenticationEntryPoint(tratadorErro401)
                               .accessDeniedHandler(tratadorErro403))

@@ -1,5 +1,6 @@
 package com.matheus.entidades.repositorio;
 
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.entidades.entidades.Motoboy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 public interface MotoboyRepositorio extends JpaRepository<Motoboy, Long> {
 
-    Page<Motoboy> findByAtivoTrue(Pageable pageable);
+    Page<Motoboy> findByAtivoTrue(Pageable pagina);
     Boolean existsByPlaca(String placa);
 
     Optional<Motoboy> findByPlaca(String placa);

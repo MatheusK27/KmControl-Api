@@ -37,7 +37,7 @@ public class    MotoboyServico {
     }
 
 
-    public Page<DadosDetalhamentoMotoboy> listarMotoboy(Pageable pagina ) {
+    public Page<DadosDetalhamentoMotoboy> listarMotoboy( Pageable pagina ) {
         return repositorio.findByAtivoTrue(pagina).map(DadosDetalhamentoMotoboy::new);
     }
 

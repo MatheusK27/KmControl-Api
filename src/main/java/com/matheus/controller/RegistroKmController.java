@@ -4,7 +4,8 @@ import com.matheus.entidades.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.entidades.dtoSaida.DadosDetalhamentoRegistroKm;
-import com.matheus.servico.RegistroKmService;
+import com.matheus.servico.RegistroKmServico;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +17,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
+
+@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/registro")
 @RequiredArgsConstructor
 public class RegistroKmController {
 
 
-    private final RegistroKmService servico;
+    private final RegistroKmServico servico;
 
     @PostMapping
     @Transactional
@@ -50,7 +53,7 @@ public class RegistroKmController {
         return ResponseEntity.ok().body(servico.buscarRegistroKmPorMotoboyIdEData(id, data));
     }
 
-    @PutMapping
+    @PutMapping("/atualizar")
     @Transactional
     public ResponseEntity<DadosDetalhamentoRegistroKm> atualizarKm(@RequestBody @Valid DadosAtualizarRegistroKm dados){
         var atualizar= servico.atualizarKm(dados);

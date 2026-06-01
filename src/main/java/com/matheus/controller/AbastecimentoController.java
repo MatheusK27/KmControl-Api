@@ -5,6 +5,7 @@ import com.matheus.entidades.dtoEntrada.DadosCadastroAbastecimento;
 
 import com.matheus.entidades.dtoSaida.DadosDetalhamentoAbastecimento;
 import com.matheus.servico.AbastecimentoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -18,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
-
+@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/abastecimento")
 @RequiredArgsConstructor

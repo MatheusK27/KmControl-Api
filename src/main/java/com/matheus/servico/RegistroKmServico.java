@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class RegistroKmService {
+public class RegistroKmServico {
 
     private final RegistroKmRepositorio repositorio;
 

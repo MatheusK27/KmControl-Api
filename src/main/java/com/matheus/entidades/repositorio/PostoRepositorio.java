@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PostoRepositorio  extends JpaRepository<Posto, Long> {
     Optional<Posto> findById(Long id);
+    boolean existsByCnpj(String cnpj);
+    boolean existsByEmail(String email);
 }

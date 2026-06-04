@@ -4,6 +4,7 @@ package com.matheus.entidades.entidades;
 import com.matheus.entidades.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
+import com.matheus.infra.RegraDeNegocioException;
 import jakarta.persistence.*;
 import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
@@ -61,10 +62,10 @@ public class RegistroKm {
 
     private void validarKmEntrada(Integer kmEntrada,LocalDate data) {
         if (kmEntrada == null || kmEntrada <= 0) {
-            throw new ValidationException("Km entrada não fornecido ou menor que zero");
+            throw new RegraDeNegocioException("Km entrada não fornecido ou menor que zero");
         }
         if (!Objects.equals(data, LocalDate.now())){
-            throw new ValidationException("Permitido somente data atual!");
+            throw new RegraDeNegocioException("Permitido somente data atual!");
         }
     }
 
@@ -91,26 +92,26 @@ public class RegistroKm {
     private void validarRegistroCompleto() {
 
         if (kmEntrada == null) {
-            throw new ValidationException("KM de entrada é obrigatório");
+            throw new RegraDeNegocioException("KM de entrada é obrigatório");
         }
 
         if (kmSaidaAlmoco != null && kmSaidaAlmoco < kmEntrada) {
-            throw new ValidationException("KM de saída para almoço não pode ser menor que KM de entrada");
+            throw new RegraDeNegocioException("KM de saída para almoço não pode ser menor que KM de entrada");
         }
 
         if (kmRetornoAlmoco != null && kmSaidaAlmoco == null) {
-            throw new ValidationException("KM de retorno do almoço exige KM de saída para almoço");
+            throw new RegraDeNegocioException("KM de retorno do almoço exige KM de saída para almoço");
         }
 
         if (kmRetornoAlmoco != null && kmRetornoAlmoco < kmSaidaAlmoco) {
-            throw new ValidationException("KM de retorno do almoço não pode ser menor que KM de saída para almoço");
+            throw new RegraDeNegocioException("KM de retorno do almoço não pode ser menor que KM de saída para almoço");
         }
 
         if (kmFim != null) {
             Integer kmAnterior = kmRetornoAlmoco != null ? kmRetornoAlmoco : kmEntrada;
 
             if (kmFim < kmAnterior) {
-                throw new ValidationException("KM final não pode ser menor que o KM anterior");
+                throw new RegraDeNegocioException("KM final não pode ser menor que o KM anterior");
             }
         }
     }
@@ -118,21 +119,21 @@ public class RegistroKm {
 
     public void finalizarRegistro(DadosFinalizarCadastroRegistroKM dados) {
         if(dados.kmSaidaAlmoco()< kmEntrada){
-            throw new ValidationException("Km de saída do almoço não pode ser menor que km de entrada");
+            throw new RegraDeNegocioException("Km de saída do almoço não pode ser menor que km de entrada");
         }
 
         if (dados.kmRetornoAlmoco() < dados.kmSaidaAlmoco()) {
-            throw new ValidationException("Km de retorno não pode ser menor que Km de saida almoco");
+            throw new RegraDeNegocioException("Km de retorno não pode ser menor que Km de saida almoco");
         }
 
         if (dados.kmFim() < dados.kmRetornoAlmoco()) {
-            throw new ValidationException("Km de saida não pode ser menor que Km de retorno do almoço");
+            throw new RegraDeNegocioException("Km de saida não pode ser menor que Km de retorno do almoço");
         }
         if (this.kmFim != null) {
-            throw new ValidationException("Registro já foi finalizado");
+            throw new RegraDeNegocioException("Registro já foi finalizado");
         }
         if(dados.kmFim() - kmEntrada >= 500){
-            throw new ValidationException("Não é permitdo andar mais de 500km diarios");
+            throw new RegraDeNegocioException("Não é permitdo andar mais de 500km diarios");
         }
 
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();

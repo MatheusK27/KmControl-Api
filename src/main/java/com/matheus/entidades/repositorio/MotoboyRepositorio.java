@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface MotoboyRepositorio extends JpaRepository<Motoboy, Long> {
 
     Page<Motoboy> findByAtivoTrue(Pageable pagina);
-    Boolean existsByPlaca(String placa);
+    boolean existsByPlaca(String placa);
 
     Optional<Motoboy> findByPlaca(String placa);
 

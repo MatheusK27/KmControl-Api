@@ -126,6 +126,5 @@ public class RegistroKmServicoTest {
         when(registroKmRepositorio.findTopByMotoboyIdOrderByKmFimDesc(dados.motoboyId())).thenReturn(Optional.of(registro));
         var resultado= registroKmServico.cadastrarKmDiario(dados);
         assertNotNull(resultado);
-
     }
 }

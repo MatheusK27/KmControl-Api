@@ -6,6 +6,7 @@ import com.matheus.entidades.dtoSaida.DadosDetalhamentoPosto;
 import com.matheus.entidades.entidades.Posto;
 import com.matheus.entidades.repositorio.AbastecimentoRepositorio;
 import com.matheus.entidades.repositorio.PostoRepositorio;
+import com.matheus.infra.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,9 @@ public class PostoServico {
 
     private final PostoRepositorio repositorio;
 
-    private final AbastecimentoRepositorio abastecimentoRepositorio;
-
     public DadosDetalhamentoPosto cadastrarPosto(DadosCadastroPosto dados) {
+        validarCnpj(dados.cnpj());
+        validarEmail(dados.email());
         var posto = new Posto(dados);
         repositorio.save(posto);
         return new DadosDetalhamentoPosto(posto);
@@ -35,8 +36,15 @@ public class PostoServico {
         return new DadosDetalhamentoPosto(posto);
     }
 
-
-
-
+    private void validarCnpj(String cnpj){
+        if (repositorio.existsByCnpj(cnpj)){
+            throw new RegraDeNegocioException("Já existe cadastro com esse cnpj");
+        }
+    }
+    private void validarEmail(String email){
+        if (repositorio.existsByEmail(email)){
+            throw new RegraDeNegocioException("Já existe cadastro com esse email");
+        }
+    }
 
 }

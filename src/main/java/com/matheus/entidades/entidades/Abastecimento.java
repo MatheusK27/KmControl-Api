@@ -11,6 +11,7 @@
     import lombok.NoArgsConstructor;
 
     import java.math.BigDecimal;
+    import java.math.RoundingMode;
     import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.util.Objects;
@@ -65,24 +66,24 @@
 
         }
 
-          private  void validarAbastecimento(){
+          private void validarAbastecimento(){
 
             BigDecimal limiteMaximo=BigDecimal.valueOf(8);
 
             if(litros.compareTo(limiteMaximo)>0){
-                throw new ValidationException("Limite de abastecimento excedido, permitido somente 8 litros de combustivél ");
+                throw new RegraDeNegocioException("Limite de abastecimento excedido, permitido somente 8 litros de combustivél ");
             }
             if(litros.compareTo(BigDecimal.ZERO)<=0){
-                throw new ValidationException("Litros deve ser maior que zero");
+                throw new RegraDeNegocioException("Litros deve ser maior que zero");
             }
 
             if (!Objects.equals(getData(), LocalDate.now())){
-                throw  new ValidationException("Permito abastecimento somente data atual");
+                throw  new RegraDeNegocioException("Permito abastecimento somente data atual");
 
             }
 
               if (valorLitro.compareTo(BigDecimal.ZERO)<=0){
-                throw new RuntimeException("Valor litro inserio errado");
+                throw new RegraDeNegocioException("Valor litro inserio errado");
 
             }
 
@@ -115,10 +116,9 @@
 
         }
 
-        public BigDecimal calculoCombustivel() {
-             return getValorLitro().multiply(getLitros());
+       public BigDecimal calculoCombustivel() {
+             return getValorLitro().multiply(getLitros().setScale(2, RoundingMode.HALF_UP));
         }
-
 
     }
 

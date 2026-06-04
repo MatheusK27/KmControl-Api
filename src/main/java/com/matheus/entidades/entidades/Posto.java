@@ -1,6 +1,7 @@
 package com.matheus.entidades.entidades;
 
 import com.matheus.entidades.dtoEntrada.DadosCadastroPosto;
+import com.matheus.infra.RegraDeNegocioException;
 import jakarta.persistence.*;
 import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class Posto {
 
     public void validarAtivo(){
         if(!this.ativo){
-            throw new ValidationException("Posto precisar estar ativo");
+            throw new RegraDeNegocioException("Posto precisar estar ativo");
         }
     }
 

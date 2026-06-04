@@ -6,8 +6,7 @@ import com.matheus.entidades.entidades.*;
 import com.matheus.infra.RegraDeNegocioException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -16,7 +15,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class AbastecimentoEntidadeTest {

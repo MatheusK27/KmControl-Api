@@ -2,6 +2,7 @@ package com.matheus.service;
 
 import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 
+import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.entidades.entidades.*;
 import com.matheus.entidades.repositorio.*;
 import com.matheus.infra.RegraDeNegocioException;
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.*;
 public class RegistroKmServicoTest {
 
 
+    @Mock
+    private AbastecimentoRepositorio abastecimentoRepositorio;
     @Mock
     private MotoboyRepositorio motoboyRepositorio;
 
@@ -110,12 +113,12 @@ public class RegistroKmServicoTest {
                 1L, LocalDate.now(), 100, 100, 100, 100);
         var motoboy = mock(Motoboy.class);
         when(motoboyRepositorio.findById(1L)).thenReturn(Optional.of(motoboy));
-        var resultado= registroKmServico.cadastrarKmDiario(dados);
+        var resultado = registroKmServico.cadastrarKmDiario(dados);
         assertNotNull(resultado);
     }
 
     @Test
-    void DeveCadastrarKmComSucesso(){
+    void DeveCadastrarKmComSucesso() {
         var dados = new DadosCadastroRegistroKm(
                 1L, LocalDate.now(), 100, 100, 100, 100);
         var motoboy = mock(Motoboy.class);
@@ -124,7 +127,24 @@ public class RegistroKmServicoTest {
         when(registroKmRepositorio.existsByMotoboyIdAndData(dados.motoboyId(), dados.data())).thenReturn(false);
         when(registroKmRepositorio.motoboyPossuiKmAbertoForaDaDataAtual(dados.motoboyId(), dados.data())).thenReturn(false);
         when(registroKmRepositorio.findTopByMotoboyIdOrderByKmFimDesc(dados.motoboyId())).thenReturn(Optional.of(registro));
-        var resultado= registroKmServico.cadastrarKmDiario(dados);
+        var resultado = registroKmServico.cadastrarKmDiario(dados);
         assertNotNull(resultado);
+    }
+    @Test
+    void naoDeveFinalizarKmQuandoForMenorQueKmDeAbastecimento() {
+        var dados = new DadosFinalizarCadastroRegistroKM(100, 100, 100);
+
+        var motoboy = mock(Motoboy.class);
+        when(motoboy.getId()).thenReturn(1L);
+        var registro = mock(RegistroKm.class);
+        when(registro.getMotoboy()).thenReturn(motoboy);
+        var abastecimento = mock(Abastecimento.class);
+        when(abastecimento.getKmMomento()).thenReturn(121);
+        when(registroKmRepositorio.findById(1L)).thenReturn(Optional.of(registro));
+        when(abastecimentoRepositorio.findTopByMotoboyIdOrderByKmMomentoDesc(1L))
+                .thenReturn(Optional.of(abastecimento));
+        assertThrows(RegraDeNegocioException.class, () ->
+                registroKmServico.finalizarCadastroRegistroKm(dados, 1L));
+        verify(registroKmRepositorio, never()).save(any());
     }
 }

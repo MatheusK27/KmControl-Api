@@ -33,6 +33,12 @@ public class TratadorDeErros {
         return ResponseEntity.notFound().build();
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> tratarCredenciaisInvalidas(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("erro", "Login ou senha inválidos"));
+    }
+
 
     private record DadosErro (String mensagem){}
 

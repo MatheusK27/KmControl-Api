@@ -6,14 +6,12 @@ import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
 import com.matheus.infra.RegraDeNegocioException;
 import jakarta.persistence.*;
-import jakarta.validation.ValidationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -42,6 +40,8 @@ public class RegistroKm {
 
     private Integer kmFim;
 
+    private Integer totalKm;
+
     private String observacao;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
@@ -54,8 +54,7 @@ public class RegistroKm {
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
         this.kmFim = dados.kmFim();
-
-
+        calcularTotalKm();
 
 
     }
@@ -64,28 +63,27 @@ public class RegistroKm {
         if (kmEntrada == null || kmEntrada <= 0) {
             throw new RegraDeNegocioException("Km entrada não fornecido ou menor que zero");
         }
-        if (!Objects.equals(data, LocalDate.now())){
+       /* if (!Objects.equals(data, LocalDate.now())){
             throw new RegraDeNegocioException("Permitido somente data atual!");
-        }
+        }*/
     }
 
     public void atualizarKm(DadosAtualizarRegistroKm dados) {
 
         if (dados.kmInicio() != null) {
             this.kmEntrada = dados.kmInicio();
-
         }
         if (dados.kmSaidaAlmoco() != null) {
             this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         }
         if (dados.kmRetornoAlmoco() != null) {
             this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
-
         }
         if (dados.kmFim() != null) {
             this.kmFim = dados.kmFim();
         }
         validarRegistroCompleto();
+        calcularTotalKm();
 
     }
 
@@ -118,6 +116,9 @@ public class RegistroKm {
 
 
     public void finalizarRegistro(DadosFinalizarCadastroRegistroKM dados) {
+        if(this.kmEntrada == null) {
+            throw new RegraDeNegocioException("Pra finalizar o km de entrada precisa ser informada");
+        }
         if(dados.kmSaidaAlmoco()< kmEntrada){
             throw new RegraDeNegocioException("Km de saída do almoço não pode ser menor que km de entrada");
         }
@@ -132,14 +133,20 @@ public class RegistroKm {
         if (this.kmFim != null) {
             throw new RegraDeNegocioException("Registro já foi finalizado");
         }
-        if(dados.kmFim() - kmEntrada >= 500){
+       if(dados.kmFim() - kmEntrada >= 500){
             throw new RegraDeNegocioException("Não é permitdo andar mais de 500km diarios");
         }
 
         this.kmSaidaAlmoco = dados.kmSaidaAlmoco();
         this.kmRetornoAlmoco = dados.kmRetornoAlmoco();
         this.kmFim = dados.kmFim();
+        calcularTotalKm();
 
+    }
+    private void calcularTotalKm() {
+        if (this.kmFim != null && this.kmEntrada != null) {
+            this.totalKm = this.kmFim - this.kmEntrada;
+        }
     }
 
     }

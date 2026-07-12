@@ -3,8 +3,10 @@ package com.matheus.servico;
 import com.matheus.entidades.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoEmAbertoRegistroKm;
 import com.matheus.entidades.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.entidades.entidades.RegistroKm;
+import com.matheus.entidades.repositorio.AbastecimentoRepositorio;
 import com.matheus.entidades.repositorio.MotoboyRepositorio;
 import com.matheus.entidades.repositorio.RegistroKmRepositorio;
 import com.matheus.infra.RegraDeNegocioException;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class RegistroKmServico {
     private final RegistroKmRepositorio repositorio;
 
     private final MotoboyRepositorio motoboyRepositorio;
+
+    private final AbastecimentoRepositorio  abastecimentoRepositorio;
 
     public DadosDetalhamentoRegistroKm cadastrarKmDiario(DadosCadastroRegistroKm dados) {
         var motoboy = motoboyRepositorio.findById(dados.motoboyId()).orElseThrow(() -> new RegraDeNegocioException(
@@ -57,12 +62,27 @@ public class RegistroKmServico {
     }
 
 
-    public DadosDetalhamentoRegistroKm finalizarCadastroRegistroKm(DadosFinalizarCadastroRegistroKM dados, Long motoboyId) {
-        var registroKm = repositorio.findByMotoboyIdAndKmEntradaIsNotNull(motoboyId).orElseThrow(() -> new RegraDeNegocioException(
+    public DadosDetalhamentoRegistroKm finalizarCadastroRegistroKm(DadosFinalizarCadastroRegistroKM dados, Long id) {
+        var registroKm = repositorio.findById(id).orElseThrow(() -> new RegraDeNegocioException(
                 "Motoboy precisa ter registro iniciado pra concluir finalização"
         ));
+        var abastecimento= abastecimentoRepositorio.findTopByMotoboyIdOrderByKmMomentoDesc(registroKm.getMotoboy().getId());
+        if(abastecimento.isPresent()) {
+            var ultimoAbastecimento = abastecimento.get().getKmMomento();
+            if (dados.kmFim()<ultimoAbastecimento){
+                throw new RegraDeNegocioException("Km final não pode ser menor que ultimo abastecimento");
+            }
+        }
         registroKm.finalizarRegistro(dados);
         return new DadosDetalhamentoRegistroKm(registroKm);
+    }
+
+    public List<DadosDetalhamentoEmAbertoRegistroKm> buscarRegistrosEmAbertoHoje(){
+
+        return repositorio.findByKmFimIsNull()
+                .stream()
+                .map(DadosDetalhamentoEmAbertoRegistroKm::new)
+                .toList();
     }
 
     private void validarRegistroKm(DadosCadastroRegistroKm dados) {

@@ -3,6 +3,7 @@ package com.matheus.controller;
 import com.matheus.entidades.dtoEntrada.DadosAtualizarRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosCadastroRegistroKm;
 import com.matheus.entidades.dtoEntrada.DadosFinalizarCadastroRegistroKM;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoEmAbertoRegistroKm;
 import com.matheus.entidades.dtoSaida.DadosDetalhamentoRegistroKm;
 import com.matheus.servico.RegistroKmServico;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @SecurityRequirement(name = "bearer-key")
@@ -60,4 +62,8 @@ public class RegistroKmController {
         return ResponseEntity.ok().body(atualizar);
     }
 
+    @GetMapping("/em-aberto/hoje")
+    public ResponseEntity<List<DadosDetalhamentoEmAbertoRegistroKm>> buscarRegistrosEmAbertoHoje(){
+        return ResponseEntity.ok().body(servico.buscarRegistrosEmAbertoHoje());
+    }
 }

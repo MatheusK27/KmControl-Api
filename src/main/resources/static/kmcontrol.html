@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KmControl</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,sans-serif;background:#eef2f7;color:#1a1a2e;font-size:15px;}
+.app{display:flex;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:230px;background:linear-gradient(160deg,#1e1b4b 0%,#312e81 100%);display:flex;flex-direction:column;flex-shrink:0;}
+.sidebar-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar-logo h1{font-size:17px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+.sidebar-logo span{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;display:block;}
+.nav{flex:1;padding:1rem 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;font-size:14px;color:rgba(255,255,255,0.6);cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.nav-item.active{color:#fff;border-left:3px solid #a78bfa;background:rgba(167,139,250,0.15);font-weight:500;}
+.nav-item i{font-size:19px;}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.1);font-size:12px;color:rgba(255,255,255,0.5);}
+.sidebar-footer span{color:rgba(255,255,255,0.8);font-weight:500;}
+.logout-btn{cursor:pointer;color:rgba(255,255,255,0.5);background:none;border:none;font-size:12px;font-family:inherit;display:flex;align-items:center;gap:4px;margin-top:6px;}
+.logout-btn:hover{color:#fff;}
+
+/* TOPBAR */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0.875rem 1.5rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.topbar h2{font-size:18px;font-weight:600;color:#1a1a2e;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.badge-role{font-size:11px;padding:4px 12px;border-radius:20px;background:#ede9fe;color:#4c1d95;font-weight:600;letter-spacing:0.5px;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:1.5rem;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:1.5rem;}
+.metric-card{border-radius:12px;padding:1.25rem;color:#fff;position:relative;overflow:hidden;}
+.metric-card:nth-child(1){background:linear-gradient(135deg,#6366f1,#8b5cf6);}
+.metric-card:nth-child(2){background:linear-gradient(135deg,#0ea5e9,#06b6d4);}
+.metric-card:nth-child(3){background:linear-gradient(135deg,#10b981,#059669);}
+.metric-card:nth-child(4){background:linear-gradient(135deg,#f59e0b,#d97706);}
+.metric-card .label{font-size:13px;opacity:0.85;margin-bottom:6px;font-weight:500;}
+.metric-card .value{font-size:28px;font-weight:700;}
+.metric-card .sub{font-size:11px;opacity:0.65;margin-top:4px;}
+
+/* CARDS */
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.card-title{font-size:15px;font-weight:600;color:#1a1a2e;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;font-size:13px;border-radius:8px;border:1px solid #d1d5db;background:#fff;color:#374151;cursor:pointer;font-family:inherit;transition:all 0.15s;font-weight:500;}
+.btn:hover{background:#f9fafb;border-color:#9ca3af;}
+.btn-primary{background:#4f46e5;color:#fff;border-color:#4f46e5;}
+.btn-primary:hover{background:#4338ca;border-color:#4338ca;}
+.btn-danger{color:#dc2626;border-color:#fca5a5;background:#fff;}
+.btn-danger:hover{background:#fef2f2;border-color:#f87171;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn:disabled{opacity:0.45;cursor:not-allowed;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead th{text-align:left;padding:10px 12px;color:#6b7280;font-weight:600;border-bottom:2px solid #e5e7eb;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+tbody td{padding:12px 12px;color:#1f2937;border-bottom:1px solid #f3f4f6;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#f8fafc;}
+
+/* STATUS BADGES */
+.status-badge{font-size:12px;padding:4px 10px;border-radius:20px;font-weight:500;}
+.status-ativo{background:#dcfce7;color:#15803d;}
+.status-inativo{background:#fee2e2;color:#dc2626;}
+.status-aberto{background:#fef9c3;color:#a16207;}
+.status-fechado{background:#dbeafe;color:#1d4ed8;}
+
+/* FORMS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:13px;color:#374151;font-weight:600;}
+.form-group input,.form-group select{font-family:inherit;font-size:14px;padding:9px 12px;border-radius:8px;border:1.5px solid #d1d5db;background:#fff;color:#111;outline:none;transition:border 0.15s;}
+.form-group input:focus,.form-group select:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,0.1);}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;}
+
+/* MISC */
+.api-note{font-size:12px;color:#6b7280;background:#f8fafc;border-radius:8px;padding:10px 14px;margin-bottom:1rem;display:flex;align-items:center;gap:6px;border-left:3px solid #4f46e5;}
+.empty-state{text-align:center;padding:3rem 1rem;color:#9ca3af;}
+.empty-state i{font-size:40px;margin-bottom:0.75rem;display:block;}
+.empty-state p{font-size:14px;}
+
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,#1e1b4b 0%,#312e81 60%,#4f46e5 100%);}
+.login-card{background:#fff;border-radius:16px;padding:2.25rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.login-card h2{font-size:22px;font-weight:700;margin-bottom:0.25rem;color:#1a1a2e;}
+.login-card p{font-size:14px;color:#6b7280;margin-bottom:1.75rem;}
+.login-card .form-group{margin-bottom:14px;}
+.login-card input{width:100%;}
+.alert{font-size:13px;padding:10px 14px;border-radius:8px;margin-top:10px;}
+.alert-error{background:#fee2e2;color:#dc2626;border-left:3px solid #dc2626;}
+.alert-success{background:#dcfce7;color:#15803d;border-left:3px solid #15803d;}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,15,35,0.5);align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(2px);}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;border:1px solid #e2e8f0;padding:1.75rem;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15);}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;color:#1a1a2e;}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center;background:#f8fafc;padding:10px 14px;border-radius:8px;}
+.search-bar label{font-size:13px;color:#374151;font-weight:500;}
+.search-bar input{font-size:13px;padding:6px 10px;border-radius:6px;border:1.5px solid #d1d5db;font-family:inherit;background:#fff;}
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="login-wrap">
+  <div class="login-card">
+    <h2>KmControl</h2>
+    <p>Sistema de controle de km e abastecimento</p>
+    <div class="form-group"><label>Login</label><input type="text" id="login-user" placeholder="seu.login"/></div>
+    <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
+    <div id="login-alert" style="display:none;" class="alert alert-error"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="doLogin()">
+      <i class="ti ti-login"></i> Entrar
+    </button>
+    <p style="font-size:11px;color:#9ca3af;margin-top:12px;text-align:center;">API: <span id="base-url-label"></span></p>
+    <p style="font-size:13px;color:#6b7280;text-align:center;margin-top:12px;">Primeiro acesso? <span onclick="showCadastro()" style="color:#4f46e5;cursor:pointer;font-weight:600;">Cadastre um usuário</span></p>
+  </div>
+</div>
+
+<div id="cadastro-screen" class="login-wrap" style="display:none;">
+  <div class="login-card">
+    <h2>KmControl</h2>
+    <p>Criar novo usuário</p>
+    <div class="form-group" style="margin-bottom:14px;"><label>Nome</label><input type="text" id="reg-usr-nome" placeholder="Nome completo"/></div>
+    <div class="form-group" style="margin-bottom:14px;"><label>Login</label><input type="text" id="reg-usr-login" placeholder="seu.login"/></div>
+    <div class="form-group" style="margin-bottom:14px;"><label>Senha</label><input type="password" id="reg-usr-senha" placeholder="••••••••"/></div>
+    <div id="reg-alert" style="display:none;" class="alert"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="cadastrarUsuarioLogin()">
+      <i class="ti ti-user-plus"></i> Cadastrar
+    </button>
+    <p style="font-size:13px;color:#6b7280;text-align:center;margin-top:12px;">Já tem conta? <span onclick="showLogin()" style="color:#4f46e5;cursor:pointer;font-weight:600;">Fazer login</span></p>
+  </div>
+</div>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h1><i class="ti ti-motorbike"></i> KmControl</h1>
+      <span>Gestão de motoboys</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="showPage('motoboys',this)"><i class="ti ti-motorbike"></i> Motoboys</div>
+      <div class="nav-item" onclick="showPage('registros',this)"><i class="ti ti-road"></i> Registros km</div>
+      <div class="nav-item" onclick="showPage('abastecimento',this)"><i class="ti ti-gas-station"></i> Abastecimentos</div>
+      <div class="nav-item" onclick="showPage('postos',this)"><i class="ti ti-building"></i> Postos</div>
+      <div class="nav-item" onclick="showPage('usuarios',this)"><i class="ti ti-users"></i> Usuários</div>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="user-label">—</span><br/>
+      <span id="role-label" style="font-size:11px;"></span><br/>
+      <button class="logout-btn" onclick="doLogout()"><i class="ti ti-logout"></i> Sair</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h2 id="page-title">Dashboard</h2>
+      <div class="topbar-right">
+        <span class="badge-role" id="badge-role">USER</span>
+        <span style="font-size:12px;color:#9ca3af;" id="topbar-url"></span>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div id="page-dashboard" class="page active">
+        <div class="metrics">
+          <div class="metric-card"><div class="label">Motoboys ativos</div><div class="value" id="m-motoboys">—</div><div class="sub">GET /motoboys</div></div>
+          <div class="metric-card"><div class="label">Abastecimentos</div><div class="value" id="m-abast">—</div><div class="sub">GET /abastecimento</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Acesso rápido</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button class="btn" onclick="showPage('motoboys',null)"><i class="ti ti-motorbike"></i> Motoboys</button>
+            <button class="btn" onclick="showPage('registros',null)"><i class="ti ti-road"></i> Registros km</button>
+            <button class="btn" onclick="showPage('abastecimento',null)"><i class="ti ti-gas-station"></i> Abastecimentos</button>
+            <button class="btn btn-primary" onclick="openModal('modal-motoboy')"><i class="ti ti-plus"></i> Novo motoboy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOTOBOYS -->
+      <div id="page-motoboys" class="page">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Motoboys</span>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="busca-placa" placeholder="Buscar por placa..." style="font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid #d1d5db;width:180px;"/>
+              <button class="btn btn-sm" onclick="buscarPlaca()"><i class="ti ti-search"></i></button>
+              <button class="btn btn-sm" onclick="loadMotoboys()"><i class="ti ti-refresh"></i></button>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-motoboy')"><i class="ti ti-plus"></i> Novo</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Nome</th><th>CNH</th><th>Placa</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-motoboys"><tr><td colspan="7"><div class="empty-state"><i class="ti ti-refresh"></i><p>Clique em atualizar</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REGISTROS KM -->
+      <div id="page-registros" class="page">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title"><i class="ti ti-clock-hour-4"></i> Em aberto hoje</span>
+            <button class="btn btn-sm" onclick="loadRegistrosEmAbertoHoje()"><i class="ti ti-refresh"></i></button>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Motoboy</th><th>Data</th><th>Km entrada</th><th>Km saída almoço</th><th>Km retorno almoço</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-em-aberto"><tr><td colspan="7"><div class="empty-state"><i class="ti ti-refresh"></i><p>Carregando...</p></div></td></tr></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Registros de km</span>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-registro')"><i class="ti ti-plus"></i> Novo registro</button>
+          </div>
+          <div class="search-bar">
+            <label>ID do motoboy:</label>
+            <input type="number" id="busca-motoboy-id" placeholder="Ex: 1" style="width:100px;"/>
+            <button class="btn btn-sm" onclick="buscarRegistros()"><i class="ti ti-search"></i> Buscar</button>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Data</th><th>Motoboy ID</th><th>Km entrada</th><th>Km saída almoço</th><th>Km retorno almoço</th><th>Km fim</th><th>Total km</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-registros"><tr><td colspan="8"><div class="empty-state"><i class="ti ti-road"></i><p>Busque por ID do motoboy</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ABASTECIMENTOS -->
+      <div id="page-abastecimento" class="page">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Abastecimentos</span>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-abastecimento')"><i class="ti ti-plus"></i> Novo</button>
+          </div>
+          <div class="search-bar">
+            <label>Por motoboy ID:</label>
+            <input type="number" id="abast-motoboy-id" placeholder="ID" style="width:70px;"/>
+            <button class="btn btn-sm" onclick="buscarAbastMotoboy()"><i class="ti ti-search"></i></button>
+            <label style="margin-left:8px;">Por mês:</label>
+            <input type="number" id="abast-mes" placeholder="1-12" min="1" max="12" style="width:60px;"/>
+            <button class="btn btn-sm" onclick="buscarAbastMes()"><i class="ti ti-search"></i></button>
+            <label style="margin-left:8px;">Por posto ID:</label>
+            <input type="number" id="abast-posto-id" placeholder="ID" style="width:70px;"/>
+            <button class="btn btn-sm" onclick="buscarAbastPosto()"><i class="ti ti-search"></i></button>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Motoboy ID</th><th>Posto ID</th><th>Litros</th><th>Valor/L</th><th>Valor Total</th><th>Km momento</th><th>Data</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-abastecimento"><tr><td colspan="8"><div class="empty-state"><i class="ti ti-gas-station"></i><p>Filtre por motoboy, mês ou posto</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- POSTOS -->
+      <div id="page-postos" class="page">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Postos</span>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-posto')"><i class="ti ti-plus"></i> Novo (Admin)</button>
+          </div>
+          <div class="search-bar">
+            <label>ID do posto:</label>
+            <input type="number" id="busca-posto-id" placeholder="Ex: 1" style="width:100px;"/>
+            <button class="btn btn-sm" onclick="buscarPosto()"><i class="ti ti-search"></i> Buscar</button>
+          </div>
+          <table>
+            <thead><tr><th>ID</th><th>Nome</th><th>CNPJ</th><th>Cidade</th><th>Telefone</th><th>Email</th><th>Ações</th></tr></thead>
+            <tbody id="tbody-postos"><tr><td colspan="7"><div class="empty-state"><i class="ti ti-building"></i><p>Busque pelo ID do posto</p></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div id="page-usuarios" class="page">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Usuários</span>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-usuario')"><i class="ti ti-plus"></i> Novo usuário</button>
+          </div>
+          <div class="api-note"><i class="ti ti-info-circle"></i> Exclusão requer role ADMIN · DELETE /usuario/excluir/{id}</div>
+          <div style="display:flex;gap:8px;margin-bottom:1rem;margin-top:0.5rem;"><button class="btn btn-danger btn-sm" onclick="openModal('modal-excluir-usuario')"><i class="ti ti-trash"></i> Excluir usuário (Admin)</button><button class="btn btn-sm" onclick="openModal('modal-atualizar-registro')"><i class="ti ti-edit"></i> Atualizar registro km</button></div>
+          <div class="empty-state"><i class="ti ti-users"></i><p>Cadastre usuários pelo formulário</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MOTOBOY -->
+<div id="modal-motoboy" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-motorbike"></i> Cadastrar motoboy</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Nome *</label><input type="text" id="mb-nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>CNH *</label><input type="text" id="mb-cnh" placeholder="12345678900"/></div>
+      <div class="form-group"><label>Placa *</label><input type="text" id="mb-placa" placeholder="ABC1D23"/></div>
+      <div class="form-group"><label>Telefone</label><input type="text" id="mb-telefone" placeholder="(21) 99999-9999"/></div>
+    </div>
+    <div id="alert-motoboy" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-motoboy')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cadastrarMotoboy()"><i class="ti ti-check"></i> Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATUALIZAR MOTOBOY -->
+<div id="modal-atualizar-motoboy" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-edit"></i> Atualizar motoboy</h3>
+    <input type="hidden" id="edit-mb-id"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Nome</label><input type="text" id="edit-mb-nome"/></div>
+      <div class="form-group"><label>CNH</label><input type="text" id="edit-mb-cnh"/></div>
+      <div class="form-group"><label>Placa</label><input type="text" id="edit-mb-placa"/></div>
+      <div class="form-group"><label>Telefone</label><input type="text" id="edit-mb-telefone"/></div>
+    </div>
+    <div id="alert-edit-motoboy" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-atualizar-motoboy')">Cancelar</button>
+      <button class="btn btn-primary" onclick="atualizarMotoboy()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REGISTRO KM -->
+<div id="modal-registro" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-road"></i> Novo registro de km</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>ID do motoboy *</label><input type="number" id="reg-motoboy-id" placeholder="1"/></div>
+      <div class="form-group"><label>Data *</label><input type="date" id="reg-data"/></div>
+      <div class="form-group"><label>Km entrada *</label><input type="number" id="reg-km-entrada" placeholder="10000"/></div>
+      <div class="form-group"><label>Km saída almoço</label><input type="number" id="reg-km-saida-almoco" placeholder="opcional"/></div>
+      <div class="form-group"><label>Km retorno almoço</label><input type="number" id="reg-km-retorno-almoco" placeholder="opcional"/></div>
+      <div class="form-group"><label>Km fim</label><input type="number" id="reg-km-fim" placeholder="opcional"/></div>
+    </div>
+    <div id="alert-registro" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-registro')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cadastrarRegistro()"><i class="ti ti-check"></i> Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FINALIZAR REGISTRO -->
+<div id="modal-finalizar" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-flag"></i> Finalizar registro</h3>
+    <input type="hidden" id="finalizar-id"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Km saída almoço *</label><input type="number" id="finalizar-saida-almoco" placeholder="10200"/></div>
+      <div class="form-group"><label>Km retorno almoço *</label><input type="number" id="finalizar-retorno-almoco" placeholder="10250"/></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Km fim *</label><input type="number" id="finalizar-km-fim" placeholder="10500"/></div>
+    </div>
+    <div id="alert-finalizar" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-finalizar')">Cancelar</button>
+      <button class="btn btn-primary" onclick="finalizarRegistro()"><i class="ti ti-check"></i> Finalizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ABASTECIMENTO -->
+<div id="modal-abastecimento" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-gas-station"></i> Novo abastecimento</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>ID do motoboy *</label><input type="number" id="ab-motoboy-id" placeholder="1"/></div>
+      <div class="form-group"><label>ID do usuário *</label><input type="number" id="ab-usuario-id" placeholder="1"/></div>
+      <div class="form-group"><label>ID do posto *</label><input type="number" id="ab-posto-id" placeholder="1"/></div>
+      <div class="form-group"><label>Data *</label><input type="date" id="ab-data"/></div>
+      <div class="form-group"><label>Km no momento *</label><input type="number" id="ab-km-momento" placeholder="10300"/></div>
+      <div class="form-group"><label>Litros *</label><input type="number" id="ab-litros" step="0.01" placeholder="10.50"/></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Valor por litro (R$) *</label><input type="number" id="ab-valor-litro" step="0.01" placeholder="5.89"/></div>
+    </div>
+    <div id="alert-abastecimento" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-abastecimento')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cadastrarAbastecimento()"><i class="ti ti-check"></i> Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POSTO -->
+<div id="modal-posto" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-building"></i> Cadastrar posto</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Nome *</label><input type="text" id="posto-nome" placeholder="Posto Ipiranga"/></div>
+      <div class="form-group"><label>CNPJ *</label><input type="text" id="posto-cnpj" placeholder="00.000.000/0001-00"/></div>
+      <div class="form-group"><label>Telefone *</label><input type="text" id="posto-telefone" placeholder="(21) 99999-9999"/></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="posto-email" placeholder="posto@email.com"/></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Cidade *</label><input type="text" id="posto-cidade" placeholder="Nova Friburgo"/></div>
+    </div>
+    <div id="alert-posto" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-posto')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cadastrarPosto()"><i class="ti ti-check"></i> Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USUARIO -->
+<div id="modal-usuario" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-user-plus"></i> Novo usuário</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>Nome *</label><input type="text" id="usr-nome" placeholder="Nome completo"/></div>
+      <div class="form-group"><label>Login *</label><input type="text" id="usr-login" placeholder="fulano"/></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Senha *</label><input type="password" id="usr-senha" placeholder="••••••••"/></div>
+    </div>
+    <div id="alert-usuario" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-usuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cadastrarUsuario()"><i class="ti ti-check"></i> Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXCLUIR USUARIO -->
+<div id="modal-excluir-usuario" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-user-minus"></i> Excluir usuário (Admin)</h3>
+    <div class="form-group">
+      <label>ID do usuário *</label>
+      <input type="number" id="excluir-usr-id" placeholder="Ex: 1"/>
+    </div>
+    <div id="alert-excluir-usuario" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-excluir-usuario')">Cancelar</button>
+      <button class="btn btn-danger" onclick="excluirUsuario()"><i class="ti ti-trash"></i> Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATUALIZAR ABASTECIMENTO -->
+<div id="modal-atualizar-abastecimento" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-edit"></i> Atualizar abastecimento</h3>
+    <input type="hidden" id="edit-ab-id"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Data</label><input type="date" id="edit-ab-data"/></div>
+      <div class="form-group"><label>Km momento</label><input type="number" id="edit-ab-km-momento" placeholder="10300"/></div>
+      <div class="form-group"><label>Litros</label><input type="number" id="edit-ab-litros" step="0.01" placeholder="10.50"/></div>
+      <div class="form-group"><label>Valor por litro (R$)</label><input type="number" id="edit-ab-valor-litro" step="0.01" placeholder="5.89"/></div>
+    </div>
+    <div id="alert-atualizar-abastecimento" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-atualizar-abastecimento')">Cancelar</button>
+      <button class="btn btn-primary" onclick="atualizarAbastecimento()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ATUALIZAR REGISTRO KM -->
+<div id="modal-atualizar-registro" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-edit"></i> Atualizar registro km</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>ID do registro *</label><input type="number" id="edit-reg-id" placeholder="1"/></div>
+      <div class="form-group"><label>Data</label><input type="date" id="edit-reg-data"/></div>
+      <div class="form-group"><label>Km início</label><input type="number" id="edit-reg-km-inicio" placeholder="opcional"/></div>
+      <div class="form-group"><label>Km saída almoço</label><input type="number" id="edit-reg-km-saida" placeholder="opcional"/></div>
+      <div class="form-group"><label>Km retorno almoço</label><input type="number" id="edit-reg-km-retorno" placeholder="opcional"/></div>
+      <div class="form-group"><label>Km fim</label><input type="number" id="edit-reg-km-fim" placeholder="opcional"/></div>
+    </div>
+    <div id="alert-atualizar-registro" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-atualizar-registro')">Cancelar</button>
+      <button class="btn btn-primary" onclick="atualizarRegistro()"><i class="ti ti-check"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE_URL = 'http://localhost:8080';
+let token = '';
+
+document.getElementById('base-url-label').textContent = BASE_URL;
+document.getElementById('topbar-url').textContent = BASE_URL;
+
+const pageTitles = {dashboard:'Dashboard',motoboys:'Motoboys',registros:'Registros de km',abastecimento:'Abastecimentos',postos:'Postos',usuarios:'Usuários'};
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = pageTitles[name] || name;
+  if (name === 'registros') loadRegistrosEmAbertoHoje();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showAlert(id, msg, ok) {
+  const el = document.getElementById(id);
+  el.className = 'alert ' + (ok ? 'alert-success' : 'alert-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function authHeaders() {
+  return {'Content-Type':'application/json','Authorization':'Bearer ' + token};
+}
+
+async function doLogin() {
+  const login = document.getElementById('login-user').value.trim();
+  const senha = document.getElementById('login-pass').value;
+  if (!login || !senha) { showLoginError('Preencha login e senha'); return; }
+  try {
+    const r = await fetch(BASE_URL + '/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({login, senha})
+    });
+    if (r.ok) {
+      const data = await r.text();
+      token = data.replace(/"/g, '').trim();
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'flex';
+      document.getElementById('user-label').textContent = login;
+      document.getElementById('badge-role').textContent = 'USER';
+      loadMotoboys();
+    } else {
+      const err = await r.json().catch(() => ({}));
+      showLoginError(err.erro || 'Login ou senha inválidos');
+    }
+  } catch(e) {
+    showLoginError('Não foi possível conectar em ' + BASE_URL);
+  }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-alert');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showCadastro() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('cadastro-screen').style.display = 'flex';
+}
+
+function showLogin() {
+  document.getElementById('cadastro-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function cadastrarUsuarioLogin() {
+  const body = {
+    nome: document.getElementById('reg-usr-nome').value,
+    login: document.getElementById('reg-usr-login').value,
+    senha: document.getElementById('reg-usr-senha').value
+  };
+  if (!body.nome || !body.login || !body.senha) {
+    const el = document.getElementById('reg-alert');
+    el.className = 'alert alert-error';
+    el.textContent = 'Preencha todos os campos';
+    el.style.display = 'block';
+    return;
+  }
+  try {
+    const r = await fetch(BASE_URL + '/usuario', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body)
+    });
+    const el = document.getElementById('reg-alert');
+    if (r.ok) {
+      el.className = 'alert alert-success';
+      el.textContent = 'Usuário cadastrado! Redirecionando para login...';
+      el.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('login-user').value = body.login;
+        document.getElementById('reg-usr-nome').value = '';
+        document.getElementById('reg-usr-login').value = '';
+        document.getElementById('reg-usr-senha').value = '';
+        el.style.display = 'none';
+        showLogin();
+      }, 1500);
+    } else {
+      const err = await r.json().catch(() => ({}));
+      el.className = 'alert alert-error';
+      el.textContent = err.mensagem || err.message || 'Erro ao cadastrar';
+      el.style.display = 'block';
+    }
+  } catch(e) {
+    const el = document.getElementById('reg-alert');
+    el.className = 'alert alert-error';
+    el.textContent = 'Erro de conexão';
+    el.style.display = 'block';
+  }
+}
+
+function doLogout() {
+  token = '';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display = 'none';
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// MOTOBOYS
+async function loadMotoboys() {
+  try {
+    const r = await fetch(BASE_URL + '/motoboys', {headers: authHeaders()});
+    if (!r.ok) { renderMotoboyError('Erro ' + r.status); return; }
+    const d = await r.json();
+    const items = d.content || d;
+    document.getElementById('m-motoboys').textContent = d.totalElements || items.length;
+    renderMotoboys(items);
+  } catch(e) { renderMotoboyError('Sem conexão com a API'); }
+}
+
+function renderMotoboyError(msg) {
+  document.getElementById('tbody-motoboys').innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="ti ti-wifi-off"></i><p>${msg}</p></div></td></tr>`;
+}
+
+function renderMotoboys(items) {
+  if (!items || items.length === 0) {
+    document.getElementById('tbody-motoboys').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-motorbike"></i><p>Nenhum motoboy cadastrado</p></div></td></tr>';
+    return;
+  }
+  document.getElementById('tbody-motoboys').innerHTML = items.map(m => `
+    <tr>
+      <td>${m.id}</td>
+      <td>${m.nome || '—'}</td>
+      <td style="font-family:monospace;font-size:12px;">${m.cnh || '—'}</td>
+      <td style="font-family:monospace;font-size:12px;">${m.placa || '—'}</td>
+      <td>${m.telefone || '—'}</td>
+      <td><span class="status-badge ${m.ativo !== false ? 'status-ativo':'status-inativo'}">${m.ativo !== false ? 'Ativo':'Inativo'}</span></td>
+      <td style="display:flex;gap:4px;">
+        <button class="btn btn-sm" title="Ver registros" onclick="verRegistros(${m.id})"><i class="ti ti-road"></i></button>
+        <button class="btn btn-sm" title="Editar" onclick="abrirEditarMotoboy(${m.id},'${(m.nome||'').replace(/'/g,"\\'")}','${m.cnh||''}','${m.placa||''}','${m.telefone||''}')"><i class="ti ti-edit"></i></button>
+        <button class="btn btn-danger btn-sm" title="Desativar (Admin)" onclick="desativarMotoboy(${m.id})"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+async function buscarPlaca() {
+  const placa = document.getElementById('busca-placa').value.trim();
+  if (!placa) { loadMotoboys(); return; }
+  try {
+    const r = await fetch(BASE_URL + '/motoboys/placa?placa=' + encodeURIComponent(placa), {headers: authHeaders()});
+    if (r.ok) renderMotoboys([await r.json()]);
+    else renderMotoboyError('Motoboy não encontrado');
+  } catch(e) { renderMotoboyError('Erro de conexão'); }
+}
+
+async function cadastrarMotoboy() {
+  const body = {
+    nome: document.getElementById('mb-nome').value,
+    cnh: document.getElementById('mb-cnh').value,
+    placa: document.getElementById('mb-placa').value,
+    telefone: document.getElementById('mb-telefone').value || undefined
+  };
+  if (!body.nome || !body.cnh || !body.placa) { showAlert('alert-motoboy','Nome, CNH e placa são obrigatórios',false); return; }
+  try {
+    const r = await fetch(BASE_URL + '/motoboys/cadastrar', {method:'POST', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-motoboy','Motoboy cadastrado!',true);
+      setTimeout(() => { closeModal('modal-motoboy'); loadMotoboys(); }, 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-motoboy', err.mensagem || err.message || 'Erro ao cadastrar', false);
+    }
+  } catch(e) { showAlert('alert-motoboy','Erro de conexão',false); }
+}
+
+function abrirEditarMotoboy(id, nome, cnh, placa, telefone) {
+  document.getElementById('edit-mb-id').value = id;
+  document.getElementById('edit-mb-nome').value = nome;
+  document.getElementById('edit-mb-cnh').value = cnh;
+  document.getElementById('edit-mb-placa').value = placa;
+  document.getElementById('edit-mb-telefone').value = telefone;
+  openModal('modal-atualizar-motoboy');
+}
+
+async function atualizarMotoboy() {
+  const id = document.getElementById('edit-mb-id').value;
+  const body = {
+    nome: document.getElementById('edit-mb-nome').value || undefined,
+    cnh: document.getElementById('edit-mb-cnh').value || undefined,
+    placa: document.getElementById('edit-mb-placa').value || undefined,
+    telefone: document.getElementById('edit-mb-telefone').value || undefined
+  };
+  try {
+    const r = await fetch(BASE_URL + '/motoboys/' + id, {method:'PUT', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-edit-motoboy','Atualizado!',true);
+      setTimeout(() => { closeModal('modal-atualizar-motoboy'); loadMotoboys(); }, 900);
+    } else { showAlert('alert-edit-motoboy','Erro ao atualizar',false); }
+  } catch(e) { showAlert('alert-edit-motoboy','Erro de conexão',false); }
+}
+
+async function desativarMotoboy(id) {
+  if (!confirm('Desativar motoboy #' + id + '? (requer role ADMIN)')) return;
+  try {
+    const r = await fetch(BASE_URL + '/motoboys/' + id, {method:'DELETE', headers: authHeaders()});
+    if (r.ok) loadMotoboys();
+    else alert('Erro: requer role ADMIN');
+  } catch(e) { alert('Erro de conexão'); }
+}
+
+// REGISTROS KM
+function verRegistros(id) {
+  showPage('registros', document.querySelector('.nav-item:nth-child(3)'));
+  document.getElementById('busca-motoboy-id').value = id;
+  buscarRegistros();
+}
+
+async function loadRegistrosEmAbertoHoje() {
+  document.getElementById('tbody-em-aberto').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-refresh"></i><p>Carregando...</p></div></td></tr>';
+  try {
+    const r = await fetch(BASE_URL + '/registro/em-aberto/hoje', {headers: authHeaders()});
+    if (!r.ok) {
+      document.getElementById('tbody-em-aberto').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-x"></i><p>Erro ' + r.status + '</p></div></td></tr>';
+      return;
+    }
+    const items = await r.json();
+    renderRegistrosEmAberto(items);
+  } catch(e) {
+    document.getElementById('tbody-em-aberto').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-wifi-off"></i><p>Erro de conexão</p></div></td></tr>';
+  }
+}
+
+function renderRegistrosEmAberto(items) {
+  if (!items || items.length === 0) {
+    document.getElementById('tbody-em-aberto').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-check"></i><p>Nenhum registro em aberto hoje</p></div></td></tr>';
+    return;
+  }
+  document.getElementById('tbody-em-aberto').innerHTML = items.map(reg => `
+    <tr>
+      <td>${reg.id}</td>
+      <td>${reg.motoboyNome || ('#' + reg.motoboyId)} <span class="status-badge status-aberto">aberto</span></td>
+      <td>${reg.data || '—'}</td>
+      <td>${reg.kmInicio ?? '—'}</td>
+      <td>${reg.kmSaidaAlmoco ?? '—'}</td>
+      <td>${reg.kmRetornoAlmoco ?? '—'}</td>
+      <td>
+        <button class="btn btn-sm" onclick="abrirFinalizar(${reg.id})"><i class="ti ti-flag"></i> Finalizar</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function buscarRegistros() {
+  const id = document.getElementById('busca-motoboy-id').value;
+  if (!id) return;
+  try {
+    const r = await fetch(BASE_URL + '/registro/motoboy/' + id, {headers: authHeaders()});
+    if (!r.ok) { document.getElementById('tbody-registros').innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="ti ti-x"></i><p>Erro ' + r.status + '</p></div></td></tr>'; return; }
+    const d = await r.json();
+    const items = d.content || d;
+    if (items.length === 0) {
+      document.getElementById('tbody-registros').innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="ti ti-road"></i><p>Nenhum registro encontrado</p></div></td></tr>';
+      return;
+    }
+    document.getElementById('tbody-registros').innerHTML = items.map(reg => `
+      <tr>
+        <td>${reg.id}</td>
+        <td>${reg.data || '—'}</td>
+        <td>${reg.motoboyId || '—'}</td>
+        <td>${reg.kmInicio ?? '—'}</td>
+        <td>${reg.kmSaidaAlmoco ?? '—'}</td>
+        <td>${reg.kmRetornoAlmoco ?? '—'}</td>
+        <td>${reg.kmFim ?? '—'}</td>
+        <td>${reg.kmTotal  ?? '—'}</td>
+        <td>
+          <button class="btn btn-sm" onclick="abrirFinalizar(${reg.id})" ${reg.kmFim != null ? 'disabled':''}>
+            <i class="ti ti-flag"></i> Finalizar
+          </button>
+        </td>
+      </tr>`).join('');
+  } catch(e) { document.getElementById('tbody-registros').innerHTML = '<tr><td colspan="9"><div class="empty-state"><i class="ti ti-wifi-off"></i><p>Erro de conexão</p></div></td></tr>'; }
+}
+
+async function cadastrarRegistro() {
+  const body = {
+    motoboyId: parseInt(document.getElementById('reg-motoboy-id').value),
+    data: document.getElementById('reg-data').value,
+    kmEntrada: parseInt(document.getElementById('reg-km-entrada').value),
+    kmSaidaAlmoco: document.getElementById('reg-km-saida-almoco').value ? parseInt(document.getElementById('reg-km-saida-almoco').value) : undefined,
+    kmRetornoAlmoco: document.getElementById('reg-km-retorno-almoco').value ? parseInt(document.getElementById('reg-km-retorno-almoco').value) : undefined,
+    kmFim: document.getElementById('reg-km-fim').value ? parseInt(document.getElementById('reg-km-fim').value) : undefined
+  };
+  if (!body.motoboyId || !body.kmEntrada || !body.data) { showAlert('alert-registro','Motoboy ID, data e km entrada são obrigatórios',false); return; }
+  try {
+    const r = await fetch(BASE_URL + '/registro', {method:'POST', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-registro','Registro criado!',true);
+      setTimeout(() => { closeModal('modal-registro'); buscarRegistros(); loadRegistrosEmAbertoHoje(); }, 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-registro', err.mensagem || err.message || 'Erro ao registrar', false);
+    }
+  } catch(e) { showAlert('alert-registro','Erro de conexão',false); }
+}
+
+function abrirFinalizar(id) {
+  document.getElementById('finalizar-id').value = id;
+  document.getElementById('finalizar-saida-almoco').value = '';
+  document.getElementById('finalizar-retorno-almoco').value = '';
+  document.getElementById('finalizar-km-fim').value = '';
+  openModal('modal-finalizar');
+}
+
+async function finalizarRegistro() {
+  const id = document.getElementById('finalizar-id').value;
+  const body = {
+    kmSaidaAlmoco: parseInt(document.getElementById('finalizar-saida-almoco').value),
+    kmRetornoAlmoco: parseInt(document.getElementById('finalizar-retorno-almoco').value),
+    kmFim: parseInt(document.getElementById('finalizar-km-fim').value)
+  };
+  if (!body.kmSaidaAlmoco || !body.kmRetornoAlmoco || !body.kmFim) { showAlert('alert-finalizar','Preencha todos os campos',false); return; }
+  try {
+    const r = await fetch(BASE_URL + '/registro/finalizar/' + id, {method:'PUT', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-finalizar','Registro finalizado!',true);
+      setTimeout(() => { closeModal('modal-finalizar'); buscarRegistros(); loadRegistrosEmAbertoHoje(); }, 900);
+    } else { const errMsg = await r.json().catch(()=>({})); showAlert('alert-finalizar', errMsg.mensagem || errMsg.message || 'Erro ao finalizar', false); }
+  } catch(e) { showAlert('alert-finalizar','Erro de conexão',false); }
+}
+
+// ABASTECIMENTOS
+async function buscarAbastMotoboy() {
+  const id = document.getElementById('abast-motoboy-id').value;
+  if (!id) return;
+  try {
+    const r = await fetch(BASE_URL + '/abastecimento/motoboy/' + id, {headers: authHeaders()});
+    if (r.ok) { const d = await r.json(); renderAbastecimentos(d.content || d); }
+  } catch(e) {}
+}
+
+async function buscarAbastMes() {
+  const mes = document.getElementById('abast-mes').value;
+  if (!mes || mes < 1 || mes > 12) { alert('Mês inválido (1-12)'); return; }
+  try {
+    const r = await fetch(BASE_URL + '/abastecimento/mes?mes=' + mes, {headers: authHeaders()});
+    if (r.ok) { const d = await r.json(); renderAbastecimentos(d.content || []); }
+  } catch(e) {}
+}
+
+async function buscarAbastPosto() {
+  const id = document.getElementById('abast-posto-id').value;
+  if (!id) return;
+  try {
+    const r = await fetch(BASE_URL + '/abastecimento/posto/' + id, {headers: authHeaders()});
+    if (r.ok) { const d = await r.json(); renderAbastecimentos(d.content || []); }
+  } catch(e) {}
+}
+
+function renderAbastecimentos(items) {
+  if (!items || items.length === 0) {
+    document.getElementById('tbody-abastecimento').innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="ti ti-gas-station"></i><p>Nenhum abastecimento encontrado</p></div></td></tr>';
+    return;
+  }
+  document.getElementById('m-abast').textContent = items.length;
+  document.getElementById('tbody-abastecimento').innerHTML = items.map(a => `
+    <tr>
+      <td>${a.id}</td>
+      <td>${a.motoboyId || '—'}</td>
+      <td>${a.postoId || '—'}</td>
+      <td>${a.litros != null ? Number(a.litros).toFixed(2) : '—'}</td>
+      <td>R$ ${a.valorLitro != null ? Number(a.valorLitro).toFixed(2) : '—'}</td>
+      <td>R$ ${a.valorTotal != null ? Number(a.valorTotal).toFixed(2) : '—'}</td>
+      <td>${a.kmMomento ?? '—'}</td>
+      <td>${a.data || '—'}</td>
+      <td style="display:flex;gap:4px;"><button class="btn btn-sm" onclick="abrirEditarAbastecimento(${a.id})"><i class="ti ti-edit"></i></button><button class="btn btn-danger btn-sm" onclick="excluirAbastecimento(${a.id})"><i class="ti ti-trash"></i></button></td>
+    </tr>`).join('');
+}
+
+async function cadastrarAbastecimento() {
+  const body = {
+    motoboyId: parseInt(document.getElementById('ab-motoboy-id').value),
+    usuarioId: parseInt(document.getElementById('ab-usuario-id').value),
+    postoId: parseInt(document.getElementById('ab-posto-id').value),
+    data: document.getElementById('ab-data').value,
+    kmMomento: parseInt(document.getElementById('ab-km-momento').value),
+    litros: parseFloat(document.getElementById('ab-litros').value),
+    valorLitro: parseFloat(document.getElementById('ab-valor-litro').value)
+  };
+  if (!body.motoboyId || !body.usuarioId || !body.postoId || !body.data || !body.kmMomento || !body.litros || !body.valorLitro) {
+    showAlert('alert-abastecimento','Preencha todos os campos obrigatórios',false); return;
+  }
+  try {
+    const r = await fetch(BASE_URL + '/abastecimento', {method:'POST', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-abastecimento','Abastecimento registrado!',true);
+      setTimeout(() => closeModal('modal-abastecimento'), 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-abastecimento', err.mensagem || err.message || 'Erro ao registrar', false);
+    }
+  } catch(e) { showAlert('alert-abastecimento','Erro de conexão',false); }
+}
+
+async function excluirAbastecimento(id) {
+  if (!confirm('Excluir abastecimento #' + id + '? (requer role ADMIN)')) return;
+  try {
+    await fetch(BASE_URL + '/abastecimento/' + id, {method:'DELETE', headers: authHeaders()});
+  } catch(e) {}
+}
+
+// POSTOS
+async function buscarPosto() {
+  const id = document.getElementById('busca-posto-id').value;
+  if (!id) return;
+  try {
+    const r = await fetch(BASE_URL + '/posto/' + id, {headers: authHeaders()});
+    if (r.ok) {
+      const p = await r.json();
+      document.getElementById('tbody-postos').innerHTML = `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.nome || '—'}</td>
+          <td style="font-family:monospace;font-size:12px;">—</td>
+          <td>—</td>
+          <td>${p.telefone || '—'}</td>
+          <td>—</td>
+          <td><button class="btn btn-danger btn-sm" onclick="desativarPosto(${p.id})"><i class="ti ti-trash"></i> Desativar</button></td>
+        </tr>`;
+    } else {
+      document.getElementById('tbody-postos').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-x"></i><p>Posto não encontrado</p></div></td></tr>';
+    }
+  } catch(e) {}
+}
+
+async function cadastrarPosto() {
+  const body = {
+    nome: document.getElementById('posto-nome').value,
+    cnpj: document.getElementById('posto-cnpj').value,
+    telefone: document.getElementById('posto-telefone').value,
+    email: document.getElementById('posto-email').value,
+    cidade: document.getElementById('posto-cidade').value
+  };
+  if (!body.nome || !body.cnpj || !body.telefone || !body.email || !body.cidade) {
+    showAlert('alert-posto','Preencha todos os campos obrigatórios',false); return;
+  }
+  try {
+    const r = await fetch(BASE_URL + '/posto', {method:'POST', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-posto','Posto cadastrado!',true);
+      setTimeout(() => closeModal('modal-posto'), 900);
+    } else {
+      showAlert('alert-posto', r.status === 403 ? 'Requer role ADMIN' : 'Erro ao cadastrar', false);
+    }
+  } catch(e) { showAlert('alert-posto','Erro de conexão',false); }
+}
+
+async function desativarPosto(id) {
+  if (!confirm('Desativar posto #' + id + '? (requer role ADMIN)')) return;
+  try {
+    const r = await fetch(BASE_URL + '/posto/' + id, {method:'DELETE', headers: authHeaders()});
+    if (r.ok) document.getElementById('tbody-postos').innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-check"></i><p>Posto desativado</p></div></td></tr>';
+    else alert('Erro: requer role ADMIN');
+  } catch(e) {}
+}
+
+// USUARIOS
+async function cadastrarUsuario() {
+  const body = {
+    nome: document.getElementById('usr-nome').value,
+    login: document.getElementById('usr-login').value,
+    senha: document.getElementById('usr-senha').value
+  };
+  if (!body.nome || !body.login || !body.senha) { showAlert('alert-usuario','Todos os campos são obrigatórios',false); return; }
+  try {
+    const r = await fetch(BASE_URL + '/usuario', {method:'POST', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-usuario','Usuário criado com sucesso!',true);
+      setTimeout(() => closeModal('modal-usuario'), 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-usuario', err.mensagem || err.message || 'Erro ao criar usuário', false);
+    }
+  } catch(e) { showAlert('alert-usuario','Erro de conexão',false); }
+}
+
+// EXCLUIR USUARIO
+async function excluirUsuario() {
+  const id = document.getElementById('excluir-usr-id').value;
+  if (!id) { showAlert('alert-excluir-usuario','Informe o ID do usuário',false); return; }
+  if (!confirm('Excluir usuário #' + id + '? Esta ação é irreversível.')) return;
+  try {
+    const r = await fetch(BASE_URL + '/usuario/excluir/' + id, {method:'DELETE', headers: authHeaders()});
+    if (r.ok) {
+      showAlert('alert-excluir-usuario','Usuário excluído!',true);
+      setTimeout(() => closeModal('modal-excluir-usuario'), 900);
+    } else {
+      showAlert('alert-excluir-usuario', r.status === 403 ? 'Requer role ADMIN' : 'Erro ao excluir', false);
+    }
+  } catch(e) { showAlert('alert-excluir-usuario','Erro de conexão',false); }
+}
+
+// ATUALIZAR ABASTECIMENTO
+function abrirEditarAbastecimento(id) {
+  document.getElementById('edit-ab-id').value = id;
+  document.getElementById('edit-ab-data').value = '';
+  document.getElementById('edit-ab-km-momento').value = '';
+  document.getElementById('edit-ab-litros').value = '';
+  document.getElementById('edit-ab-valor-litro').value = '';
+  openModal('modal-atualizar-abastecimento');
+}
+
+async function atualizarAbastecimento() {
+  const id = document.getElementById('edit-ab-id').value;
+  const body = {};
+  const data = document.getElementById('edit-ab-data').value;
+  const km = document.getElementById('edit-ab-km-momento').value;
+  const litros = document.getElementById('edit-ab-litros').value;
+  const valorLitro = document.getElementById('edit-ab-valor-litro').value;
+  if (data) body.data = data;
+  if (km) body.kmMomento = parseInt(km);
+  if (litros) body.litros = parseFloat(litros);
+  if (valorLitro) body.valorLitro = parseFloat(valorLitro);
+  if (Object.keys(body).length === 0) { showAlert('alert-atualizar-abastecimento','Preencha pelo menos um campo',false); return; }
+  try {
+    const r = await fetch(BASE_URL + '/abastecimento/' + id, {method:'PUT', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-atualizar-abastecimento','Abastecimento atualizado!',true);
+      setTimeout(() => closeModal('modal-atualizar-abastecimento'), 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-atualizar-abastecimento', err.mensagem || err.message || 'Erro ao atualizar', false);
+    }
+  } catch(e) { showAlert('alert-atualizar-abastecimento','Erro de conexão',false); }
+}
+
+// ATUALIZAR REGISTRO KM
+async function atualizarRegistro() {
+  const id = document.getElementById('edit-reg-id').value;
+  if (!id) { showAlert('alert-atualizar-registro','ID do registro é obrigatório',false); return; }
+  const body = { id: parseInt(id) };
+  const data = document.getElementById('edit-reg-data').value;
+  const kmInicio = document.getElementById('edit-reg-km-inicio').value;
+  const kmSaida = document.getElementById('edit-reg-km-saida').value;
+  const kmRetorno = document.getElementById('edit-reg-km-retorno').value;
+  const kmFim = document.getElementById('edit-reg-km-fim').value;
+  if (data) body.data = data;
+  if (kmInicio) body.kmInicio = parseInt(kmInicio);
+  if (kmSaida) body.kmSaidaAlmoco = parseInt(kmSaida);
+  if (kmRetorno) body.kmRetornoAlmoco = parseInt(kmRetorno);
+  if (kmFim) body.kmFim = parseInt(kmFim);
+  try {
+    const r = await fetch(BASE_URL + '/registro/atualizar', {method:'PUT', headers: authHeaders(), body: JSON.stringify(body)});
+    if (r.ok) {
+      showAlert('alert-atualizar-registro','Registro atualizado!',true);
+      setTimeout(() => { closeModal('modal-atualizar-registro'); buscarRegistros(); }, 900);
+    } else {
+      const err = await r.json().catch(()=>({}));
+      showAlert('alert-atualizar-registro', err.mensagem || err.message || 'Erro ao atualizar', false);
+    }
+  } catch(e) { showAlert('alert-atualizar-registro','Erro de conexão',false); }
+}
+
+document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); }));
+document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(m => m.classList.remove('open')); });
+</script>
+</body>
+</html>

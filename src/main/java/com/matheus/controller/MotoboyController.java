@@ -3,6 +3,7 @@ package com.matheus.controller;
 
 import com.matheus.entidades.dtoEntrada.DadosAtualizarMotoboy;
 import com.matheus.entidades.dtoEntrada.DadosCadastroMotoboy;
+import com.matheus.entidades.dtoSaida.DadosDetalhamentoEmAbertoRegistroKm;
 import com.matheus.entidades.dtoSaida.DadosDetalhamentoMotoboy;
 import com.matheus.servico.MotoboyServico;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @SecurityRequirement(name = "bearer-key")
@@ -60,5 +62,6 @@ public class MotoboyController {
         servico.desativarMotoboy(id);
         return ResponseEntity.noContent().build();
     }
+
 
 }

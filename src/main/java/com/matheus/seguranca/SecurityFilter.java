@@ -23,6 +23,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String uri = request.getRequestURI();
+        if (uri.equals("/kmcontrol.html") || uri.endsWith(".html")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         var token = recuperarToken(request);
         if (token != null) {
             var login = tokenService.validarToken(token);

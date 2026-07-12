@@ -29,13 +29,10 @@ public class AutenticacaoController {
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody @Valid DadosLogin dados) {
-        try {
+
             var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
             var authenticate = manager.authenticate(token);
             var jwt = tokenService.gerarToken((Usuario) authenticate.getPrincipal());
             return ResponseEntity.ok(jwt);
-        } catch (BadCredentialsException e) {
-            return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("erro", "Login ou senha inválidos"));
-        }
     }
 }

@@ -77,10 +77,10 @@
                 throw new RegraDeNegocioException("Litros deve ser maior que zero");
             }
 
-            if (!Objects.equals(getData(), LocalDate.now())){
+            /* (!Objects.equals(getData(), LocalDate.now())){
                 throw  new RegraDeNegocioException("Permito abastecimento somente data atual");
 
-            }
+            }*/
 
               if (valorLitro.compareTo(BigDecimal.ZERO)<=0){
                 throw new RegraDeNegocioException("Valor litro inserio errado");
@@ -95,6 +95,10 @@
             }
             if(registroKm.getKmFim()!=null && this.kmMomento > registroKm.getKmFim()){
                 throw new RegraDeNegocioException("Km de abastecimento não pode ser maior que km final");
+            }
+            if (this.kmMomento - registroKm.getKmEntrada()>= 500) {
+                throw new RegraDeNegocioException("Abastecimento não pode ser maior que 500KM");
+
             }
 
         }

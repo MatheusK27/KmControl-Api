@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
@@ -58,7 +59,8 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
             @Param("data") LocalDate data
     );
 
-
+    List<RegistroKm> findByKmFimIsNull();
     Optional<RegistroKm> findByMotoboyIdAndKmEntradaIsNotNull(Long motoboyId);
+    List<RegistroKm> findByDataAndKmFimIsNull(LocalDate data);
 
 }

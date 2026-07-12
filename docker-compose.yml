@@ -17,7 +17,7 @@ services:
       retries: 5
 
   app:
-    build: .
+    image: matheusk27/kmcontrol-api:latest
     container_name: kmcontrol-app
     ports:
       - "8080:8080"

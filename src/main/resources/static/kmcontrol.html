@@ -489,7 +489,9 @@ tbody tr:hover{background:#f8fafc;}
 </div>
 
 <script>
-const BASE_URL = 'http://localhost:8080';
+  const BASE_URL = window.location.hostname === 'localhost'
+          ? 'http://localhost:8080'
+          : `http://${window.location.hostname}:8080`;
 let token = '';
 
 document.getElementById('base-url-label').textContent = BASE_URL;

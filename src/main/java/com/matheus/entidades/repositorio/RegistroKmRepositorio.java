@@ -59,6 +59,25 @@ public interface RegistroKmRepositorio extends JpaRepository<RegistroKm,Long> {
             @Param("data") LocalDate data
     );
 
+    List<RegistroKm> findByMotoboyIdAndDataBetween(
+            Long motoboyId,
+            LocalDate dataInicial,
+            LocalDate dataFinal
+    );
+
+    @Query("""
+    SELECT r
+    FROM RegistroKm r
+    WHERE r.motoboy.id = :motoboyId
+      AND r.data BETWEEN :inicio AND :fim
+    ORDER BY r.data
+    """)
+    List<RegistroKm> buscarRelatorioMensal(
+            @Param("motoboyId") Long motoboyId,
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim
+    );
+
     List<RegistroKm> findByKmFimIsNull();
     Optional<RegistroKm> findByMotoboyIdAndKmEntradaIsNotNull(Long motoboyId);
     List<RegistroKm> findByDataAndKmFimIsNull(LocalDate data);

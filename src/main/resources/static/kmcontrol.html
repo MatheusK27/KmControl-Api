@@ -121,7 +121,7 @@ tbody tr:hover{background:#f8fafc;}
     <h2>KmControl</h2>
     <p>Sistema de controle de km e abastecimento</p>
     <div class="form-group"><label>Login</label><input type="text" id="login-user" placeholder="seu.login"/></div>
-    <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
+    <div class="form-group"><label>Senha</label><div style="position:relative;"><input type="password" id="login-pass" placeholder="••••••••" style="width:100%;padding-right:40px;"/><span onclick="toggleSenha('login-pass',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:#9ca3af;font-size:16px;">👁</span></div></div>
     <div id="login-alert" style="display:none;" class="alert alert-error"></div>
     <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="doLogin()">
       <i class="ti ti-login"></i> Entrar
@@ -202,6 +202,7 @@ tbody tr:hover{background:#f8fafc;}
               <button class="btn btn-sm" onclick="buscarPlaca()"><i class="ti ti-search"></i></button>
               <button class="btn btn-sm" onclick="loadMotoboys()"><i class="ti ti-refresh"></i></button>
               <button class="btn btn-primary btn-sm" onclick="openModal('modal-motoboy')"><i class="ti ti-plus"></i> Novo</button>
+              <button class="btn btn-primary btn-sm" onclick="baixarRelatorio()"> <i class="ti ti-file-download"></i> Relatório PDF </button>
             </div>
           </div>
           <table>
@@ -226,7 +227,10 @@ tbody tr:hover{background:#f8fafc;}
         <div class="card">
           <div class="card-header">
             <span class="card-title">Registros de km</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-registro')"><i class="ti ti-plus"></i> Novo registro</button>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm" onclick="openModal('modal-relatorio-pdf')"><i class="ti ti-file-type-pdf"></i> Relatório PDF</button>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-registro')"><i class="ti ti-plus"></i> Novo registro</button>
+            </div>
           </div>
           <div class="search-bar">
             <label>ID do motoboy:</label>
@@ -488,6 +492,23 @@ tbody tr:hover{background:#f8fafc;}
   </div>
 </div>
 
+<!-- MODAL RELATÓRIO PDF -->
+<div id="modal-relatorio-pdf" class="overlay">
+  <div class="modal">
+    <h3><i class="ti ti-file-type-pdf"></i> Gerar relatório mensal de km</h3>
+    <div class="form-grid">
+      <div class="form-group"><label>ID do motoboy *</label><input type="number" id="rel-motoboy-id" placeholder="1"/></div>
+      <div class="form-group"><label>Mês *</label><input type="number" id="rel-mes" placeholder="1-12" min="1" max="12"/></div>
+      <div class="form-group" style="grid-column:1/-1;"><label>Ano *</label><input type="number" id="rel-ano" placeholder="2026" value="2026"/></div>
+    </div>
+    <div id="alert-relatorio" style="display:none;" class="alert"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-relatorio-pdf')">Cancelar</button>
+      <button class="btn btn-primary" onclick="gerarRelatorioPdf()"><i class="ti ti-download"></i> Baixar PDF</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const BASE_URL = window.location.hostname === 'localhost'
           ? 'http://localhost:8080'
@@ -546,6 +567,50 @@ async function doLogin() {
     }
   } catch(e) {
     showLoginError('Não foi possível conectar em ' + BASE_URL);
+  }
+}
+
+function toggleSenha(inputId, icon) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    icon.textContent = '👁';
+  }
+}
+
+async function gerarRelatorioPdf() {
+  const motoboyId = document.getElementById('rel-motoboy-id').value;
+  const mes = document.getElementById('rel-mes').value;
+  const ano = document.getElementById('rel-ano').value;
+
+  if (!motoboyId || !mes || !ano) {
+    showAlert('alert-relatorio', 'Preencha todos os campos', false);
+    return;
+  }
+
+  try {
+    const r = await fetch(`${BASE_URL}/relatorio/pdf?motoboyId=${motoboyId}&ano=${ano}&mes=${mes}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    if (r.ok) {
+      const blob = await r.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `relatorio-motoboy-${motoboyId}-${mes}-${ano}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      closeModal('modal-relatorio-pdf');
+    } else {
+      const err = await r.json().catch(() => ({}));
+      showAlert('alert-relatorio', err.mensagem || err.message || 'Erro ao gerar relatório', false);
+    }
+  } catch(e) {
+    showAlert('alert-relatorio', 'Erro de conexão', false);
   }
 }
 
@@ -1074,6 +1139,39 @@ async function atualizarRegistro() {
 
 document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); }));
 document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(m => m.classList.remove('open')); });
+  async function baixarRelatorio() {
+    try {
+      const response = await fetch(BASE_URL + '/relatorios/motoboys/pdf', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+
+      if (!response.ok) {
+        alert('Erro ao gerar relatório');
+        return;
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'relatorio-motoboys.pdf';
+
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (erro) {
+      console.error(erro);
+      alert('Erro ao baixar relatório');
+    }
+  }
 </script>
 </body>
 </html>

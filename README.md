@@ -1,4 +1,3 @@
-
 # 🚀 KmControl API
 
 API REST desenvolvida para controle de operações de motoboys, abastecimentos e registros de quilometragem.
@@ -9,75 +8,123 @@ O sistema foi criado para resolver um problema real de controle manual de:
 - 📊 Consumo de combustível
 - 📋 Controle operacional de motoboys
 
+🌐 **Acesso:** [http://18.228.117.80:8080/kmcontrol.html](http://18.228.117.80:8080/kmcontrol.html)
+
 ---
 
-# 🛠️ Tecnologias utilizadas
+## 🛠️ Tecnologias utilizadas
 
 - ☕ Java 21
-- 🌱 Spring Boot
-- 🔐 Spring Security
-- 🎟️ JWT Authentication
-- 🗄️ Spring Data JPA
-- 🐘 PostgreSQL
+- 🌱 Spring Boot 3.5
+- 🔐 Spring Security + JWT
+- 🗄️ Spring Data JPA + Hibernate
+- 🐘 PostgreSQL 16
 - 📦 Maven
-- ⚙️ Hibernate
 - ✅ Bean Validation
+- 🐳 Docker + Docker Compose
+- ☁️ AWS EC2 (deploy em produção)
+- 🗃️ Flyway (migrations)
+- 📄 OpenPDF (geração de relatórios PDF)
+- 📚 Swagger / OpenAPI (documentação)
 
 ---
 
-# ✨ Funcionalidades
+## ✨ Funcionalidades
 
-## 🛵 Motoboys
-- Cadastro de motoboys
-- Atualização de dados
-- Ativação/desativação
-- Listagem de motoboys
+### 🛵 Motoboys
+- Cadastro, atualização e listagem de motoboys
+- Ativação e desativação
+- Busca por placa
 
-## 📍 Registros de KM
-- Registro de KM inicial/final
-- Controle de utilização da moto
-- Histórico de registros
+### 📍 Registros de KM
+- Registro de KM de entrada do dia
+- Controle de saída e retorno do almoço
+- Finalização do registro com KM final
+- Cálculo automático do total de KM rodado no dia
+- Painel de registros **em aberto** do dia atual
+- Histórico completo por motoboy
+- Validações de negócio (KM não pode regredir, limite de 500km/dia, etc.)
 
-## ⛽ Abastecimentos
-- Cadastro de abastecimentos
+### ⛽ Abastecimentos
+- Cadastro de abastecimentos com litros e valor por litro
+- Cálculo automático do valor total
 - Associação com motoboy e posto
-- Cálculo de consumo
-- Histórico de abastecimentos
+- Busca por motoboy, mês ou posto
 
-## 🔐 Segurança
+### 📋 Postos
+- Cadastro e consulta de postos de combustível
+
+### 📄 Relatório PDF
+- Geração de relatório mensal de KM por motoboy
+- Download automático do PDF com dados do período
+
+### 🖥️ Frontend Web
+- Interface completa em HTML/CSS/JS puro
+- Tela de login com autenticação JWT
+- Cadastro de usuário no primeiro acesso
+- Dashboard com métricas
+- Gerenciamento completo via navegador, sem instalação
+
+### 🔐 Segurança
 - Autenticação com JWT
 - Rotas protegidas
-- Controle de acesso
+- Controle de acesso por roles (USER/ADMIN)
 
 ---
 
-# 📂 Estrutura do Projeto
+## 🐳 Docker
+
+O projeto está containerizado com Docker e Docker Compose, com dois containers:
+- **kmcontrol-app** — aplicação Spring Boot
+- **kmcontrol-db** — PostgreSQL 16
+
+```bash
+docker-compose up -d
+```
+
+A imagem está publicada no Docker Hub:
+```
+docker pull matheusk27/kmcontrol-api:latest
+```
+
+---
+
+## ☁️ Deploy
+
+A aplicação está em produção na **AWS EC2** (São Paulo), rodando via Docker.
+
+🌐 **URL pública:** [http://18.228.117.80:8080/kmcontrol.html](http://18.228.117.80:8080/kmcontrol.html)
+
+---
+
+## 📂 Estrutura do Projeto
 
 ```text
 src/main/java
  ├── controller
- ├── service
- ├── repository
- ├── domain
- ├── dto
+ ├── servico
+ ├── repositorio
+ ├── entidades
+ │   ├── dtoEntrada
+ │   └── dtoSaida
  ├── infra
- └── security
+ └── seguranca
+
+src/main/resources
+ ├── db/migration        # Flyway migrations (V1 a V6)
+ └── static              # Frontend (kmcontrol.html)
 ```
 
 ---
 
-# ▶️ Como executar o projeto
+## ▶️ Como executar localmente
 
-## 1️⃣ Clonar repositório
-
+### 1️⃣ Clonar repositório
 ```bash
 git clone https://github.com/MatheusK27/KmControl-Api.git
 ```
 
----
-
-## 2️⃣ Configurar variáveis de ambiente
-
+### 2️⃣ Configurar variáveis de ambiente
 ```env
 DB_URL=jdbc:postgresql://localhost:5432/motoboy_db
 DB_USERNAME=postgres
@@ -85,99 +132,83 @@ DB_PASSWORD=sua_senha
 JWT_SECRET=sua_chave_jwt
 ```
 
----
+### 3️⃣ Executar com Docker (recomendado)
+```bash
+docker-compose up -d
+```
 
-## 3️⃣ Executar aplicação
-
+### 4️⃣ Ou executar localmente
 ```bash
 ./mvnw spring-boot:run
 ```
 
 ---
 
-# 🌐 Endpoints principais
+## 🌐 Endpoints principais
 
-## 🔑 Autenticação
-
-### Login
-
+### 🔑 Autenticação
 ```http
 POST /login
 ```
-
-Body:
-
 ```json
-{
-  "login": "admin",
-  "senha": "123456"
-}
+{ "login": "usuario", "senha": "senha" }
 ```
 
----
-
-# 🛵 Motoboys
-
-### ➕ Cadastrar motoboy
-
+### 🛵 Motoboys
 ```http
-POST /motoboys
+POST   /motoboys/cadastrar
+GET    /motoboys
+PUT    /motoboys/{id}
+DELETE /motoboys/{id}
+GET    /motoboys/placa?placa=ABC1D23
 ```
 
-### 📋 Listar motoboys
-
+### 📍 Registros de KM
 ```http
-GET /motoboys
+POST /registro
+GET  /registro/motoboy/{id}
+PUT  /registro/finalizar/{id}
+PUT  /registro/atualizar
+GET  /registro/em-aberto/hoje
 ```
 
-### ✏️ Atualizar motoboy
-
-```http
-PUT /motoboys/{id}
-```
-
----
-
-# ⛽ Abastecimentos
-
-### ➕ Registrar abastecimento
-
+### ⛽ Abastecimentos
 ```http
 POST /abastecimento
+GET  /abastecimento/motoboy/{id}
+GET  /abastecimento/mes?mes=7
+GET  /abastecimento/posto/{id}
+PUT  /abastecimento/{id}
+DELETE /abastecimento/{id}
 ```
 
-### 📜 Buscar abastecimentos por motoboy
-
+### 📄 Relatório PDF
 ```http
-GET /abastecimento/motoboy/{id}
+GET /relatorio/pdf?motoboyId=1&ano=2026&mes=7
 ```
 
 ---
 
-# 📏 Regras de negócio
+## 📏 Regras de negócio
 
-- ❌ Motoboy inativo não pode operar
-- 🚫 KM final não pode ser menor que KM inicial
-- ✅ Abastecimentos devem possuir motoboy válido
-- 📚 O sistema mantém histórico operacional das motos
-
----
-# 🚧 PROJETO EM DESENVIMENTO
-# 🚧 Melhorias futuras
-
-- 📊 Dashboard web
-- 📈 Relatórios de consumo
-- ☁️ Deploy em nuvem
-- 🐳 Docker
-- 🧪 Testes automatizados
-- 💰 Controle financeiro
-- 📎 Upload de comprovantes
+- Motoboy inativo não pode operar
+- KM final não pode ser menor que KM inicial
+- KM não pode regredir entre registros de dias diferentes
+- Limite de 500km por dia
+- Não é possível abrir dois registros no mesmo dia para o mesmo motoboy
+- Registro em aberto em outro dia bloqueia novo cadastro
+- Total de KM rodado é calculado e persistido automaticamente
 
 ---
 
-# 👨‍💻 Autor
+## 🧪 Testes
 
-Matheus Klein
+Testes unitários implementados com **JUnit 5 + Mockito** cobrindo as regras de negócio da camada de serviço.
 
-🔗 GitHub:
-https://github.com/MatheusK27
+---
+
+## 👨‍💻 Autor
+
+**Matheus Klein**
+
+🔗 GitHub: [https://github.com/MatheusK27](https://github.com/MatheusK27)

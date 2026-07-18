@@ -4,13 +4,12 @@ import com.matheus.entidades.dtoEntrada.DadosCadastroPosto;
 import com.matheus.infra.RegraDeNegocioException;
 import jakarta.persistence.*;
 import jakarta.validation.ValidationException;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name= "posto")
 public class Posto {
